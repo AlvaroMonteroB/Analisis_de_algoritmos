@@ -10,7 +10,11 @@ float P_punto(vector<float>X,vector<float>Y);
 vector<float>vect_1(int size);
 int render_graphic();
 void func_prin();
-void tipo(float a,float b,float c,float d);
+void tipo(Tipo_graph* a);
+vector<float>graph_const();
+vector<float>graph_parabolica();
+vector<float>graph_lineal();
+vector<float>graph_log();
 
 
 
@@ -34,7 +38,7 @@ void func_prin(){
     comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
     comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
     QuickSort(comp1,0,tam);
-    tipo(comp1);
+    tipo(comp1);    
 
 }
 
@@ -107,7 +111,13 @@ void tipo(Tipo_graph* a){
         {
             cout<<"Es de tipo "<<a[0].id;
         }
-        
+    
+    }else if(a[0].correlation>0){
+            cout<<"Es de tipo "<<a[3].id;
+    }else if(a[3].correlation<0){
+            cout<<"Es de tipo"<<a[0].id;
+    }else{
+            cout<<"Es de tipo "<<a[3].id;
     }
     
 }
