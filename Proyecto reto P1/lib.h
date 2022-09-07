@@ -9,14 +9,34 @@ float C_correlacion(vector<float>X,vector<float>Y);
 float P_punto(vector<float>X,vector<float>Y);
 vector<float>vect_1(int size);
 int render_graphic();
+void func_prin();
 void tipo(float a,float b,float c,float d);
 
 
-typedef struct Tipo_graph{
-        float correlation;
-        int id;
 
-}Graph;
+typedef struct{
+        float correlation;
+        string id;
+
+}Tipo_graph;
+
+void func_prin(){
+    Tipo_graph *comp1;
+    vector<float>tiempos=Capt_tiempos(5);
+    int tam=tiempos.size();
+    comp1=(Tipo_graph*)malloc(tam*sizeof(Tipo_graph));
+    vector<float>constante;
+    vector<float>parabola;
+    vector<float>lineal;
+    vector<float>logaritmica;
+    comp1[0].correlation=C_correlacion(tiempos,constante);comp1[0].id="Constante";
+    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolica";
+    comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
+    comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
+    QuickSort(comp1,0,tam);
+
+}
+
 
 vector<float>Capt_tiempos(int ns){
     vector<float>Tiempos;
@@ -46,7 +66,6 @@ float C_correlacion(vector<float>X,vector<float>Y){
         aux1=sqrt(X.size()*xx-(x1*x1));
         aux2=sqrt(Y.size()*yy-(y1*y1));
         correlacion=(X.size()*xpy-x1*y1)/(aux1*aux2);
-
         return correlacion;
 
 }
@@ -79,29 +98,41 @@ vector<float>vect_1(int size){
     return vect;
 }
 
-void tipo(float a,float b,float c,float d){
-    priority_queue<float>Valores;
-    Valores.push(a);Valores.push(b);Valores.push(c);Valores.push(d);
-    float highest,lowest;
-    highest=Valores.top();
-    for (int i = 0; i < 3; i++)
-    {
-        Valores.pop();
-    }
-    lowest=Valores.top();
-    if (lowest<0&&highest>0)
-    {
-        if (-lowest<highest)
-        {
-            
-         }
-    }else if(lowest>0&&highest>0){
-            
-            
-    }else if (lowest<0&&highest<0)
-    {
-        
-    }
+void tipo(Tipo_graph* a){
+   
+}
 
+
+void QuickSort(Tipo_graph *array, int inicio, int final) {
+  int i = inicio, f = final;
+  float tmp;
+  int x = array[(inicio + final) / 2].correlation;
+        do {
+            while(array[i].correlation < x && f <= final) {
+            i++;
+            }
+            while(x < array[f].correlation && f > inicio) {
+            f--;
+            }
+            if(i <= f) {
+            tmp = array[i].correlation;
+            array[i].correlation = array[f].correlation;
+            array[f].correlation = tmp;
+            i++; f--;
+            }
+   }         while(i <= f);
+
+        if(inicio < f) {
+          QuickSort(array,inicio,f);//algoritmo recursivo
+        }
+
+       if(i < final){
+         QuickSort(array,i,final);
+       }
 
 }
+
+
+        
+
+   
