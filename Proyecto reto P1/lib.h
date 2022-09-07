@@ -13,6 +13,8 @@ void tipo(float a,float b,float c,float d);
 
 
 typedef struct Tipo_graph{
+        float correlation;
+        int id;
 
 }Graph;
 
@@ -91,16 +93,15 @@ void tipo(float a,float b,float c,float d){
     {
         if (-lowest<highest)
         {
-        
+            
          }
     }else if(lowest>0&&highest>0){
             
             
+    }else if (lowest<0&&highest<0)
+    {
+        
     }
-    
-    
-    
-    
 
 
 }
