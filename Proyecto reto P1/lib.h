@@ -1,13 +1,20 @@
 #include<iostream>
 #include<vector>
 #include<ctime>
+#include<queue>
 #include<math.h>
 using namespace std;
 vector<float>Capt_tiempos(int ns);
 float C_correlacion(vector<float>X,vector<float>Y);
 float P_punto(vector<float>X,vector<float>Y);
 vector<float>vect_1(int size);
-int render();
+int render_graphic();
+void tipo(float a,float b,float c,float d);
+
+
+typedef struct Tipo_graph{
+
+}Graph;
 
 vector<float>Capt_tiempos(int ns){
     vector<float>Tiempos;
@@ -15,7 +22,9 @@ vector<float>Capt_tiempos(int ns){
     for (int i = 0; i < ns; i++)
     {
         estampa=clock();
+        //Bloque de codigo por analizar
         cout<<"Hola"<<endl;
+        //Termina bloque de codigo
         estampa=clock()-estampa;
         Tiempos.push_back((float)estampa);
     }
@@ -66,4 +75,32 @@ vector<float>vect_1(int size){
         vect.push_back(1);
     }
     return vect;
+}
+
+void tipo(float a,float b,float c,float d){
+    priority_queue<float>Valores;
+    Valores.push(a);Valores.push(b);Valores.push(c);Valores.push(d);
+    float highest,lowest;
+    highest=Valores.top();
+    for (int i = 0; i < 3; i++)
+    {
+        Valores.pop();
+    }
+    lowest=Valores.top();
+    if (lowest<0&&highest>0)
+    {
+        if (-lowest<highest)
+        {
+        
+         }
+    }else if(lowest>0&&highest>0){
+            
+            
+    }
+    
+    
+    
+    
+
+
 }
