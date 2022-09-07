@@ -7,6 +7,7 @@ vector<float>Capt_tiempos(int ns);
 float C_correlacion(vector<float>X,vector<float>Y);
 float P_punto(vector<float>X,vector<float>Y);
 vector<float>vect_1(int size);
+int render();
 
 vector<float>Capt_tiempos(int ns){
     vector<float>Tiempos;
