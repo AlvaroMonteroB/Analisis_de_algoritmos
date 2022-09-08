@@ -65,6 +65,7 @@ vector<float>Capt_tiempos(int ns){
         //Termina bloque de codigo
         estampa=clock()-estampa;
         Tiempos.push_back((float)estampa);
+        cout<<((float)Tiempos.back());
     }
     return Tiempos;
 }
@@ -72,7 +73,7 @@ vector<float>Capt_tiempos(int ns){
 float C_correlacion(vector<float>X,vector<float>Y){
         vector<float>vecx=vect_1(X.size());
         vector<float>vecy=vect_1(Y.size());
-        int aux1,aux2;
+        float aux1,aux2;
         float xpy=P_punto(X,Y);
         float xx=P_punto(X,X);
         float yy=P_punto(Y,Y);
@@ -82,6 +83,7 @@ float C_correlacion(vector<float>X,vector<float>Y){
         aux1=sqrt(X.size()*xx-(x1*x1));
         aux2=sqrt(Y.size()*yy-(y1*y1));
         correlacion=(X.size()*xpy-x1*y1)/(aux1*aux2);
+        cout<<correlacion;
         return correlacion;
 
 }
