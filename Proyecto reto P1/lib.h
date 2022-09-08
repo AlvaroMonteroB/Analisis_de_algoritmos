@@ -1,9 +1,17 @@
 #include<iostream>
+#include<stdio.h>
+#include<stdlib.h>
 #include<vector>
-#include<ctime>
+#include<ctime> 
 #include<queue>
 #include<math.h>
+#include<string.h>
 using namespace std;
+typedef struct{
+        float correlation;
+        string id;
+
+}Tipo_graph;
 vector<float>Capt_tiempos(int ns);
 float C_correlacion(vector<float>X,vector<float>Y);
 float P_punto(vector<float>X,vector<float>Y);
@@ -11,34 +19,38 @@ vector<float>vect_1(int size);
 int render_graphic();
 void func_prin();
 void tipo(Tipo_graph* a);
-vector<float>graph_const();
-vector<float>graph_parabolica();
-vector<float>graph_lineal();
-vector<float>graph_log();
+vector<float>graph_const(int tam);
+vector<float>graph_parabolica(int tam);
+vector<float>graph_lineal(int tam);
+vector<float>graph_log(int tam);
+void QuickSort(Tipo_graph *array, int inicio, int final);
 
 
 
-typedef struct{
-        float correlation;
-        string id;
 
-}Tipo_graph;
 
 void func_prin(){
     Tipo_graph *comp1;
     vector<float>tiempos=Capt_tiempos(5);
     int tam=tiempos.size();
     comp1=(Tipo_graph*)malloc(tam*sizeof(Tipo_graph));
-    vector<float>constante;
-    vector<float>parabola;
-    vector<float>lineal;
-    vector<float>logaritmica;
+    if (!comp1)
+    {
+        exit;
+    }
+    
+    vector<float>constante=graph_const(tam);
+    vector<float>parabola=graph_parabolica(tam);
+    vector<float>lineal=graph_lineal(tam);
+    vector<float>logaritmica=graph_log(tam);
     comp1[0].correlation=C_correlacion(tiempos,constante);comp1[0].id="Constante";
-    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolica";
+    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolic";cout<<"Aqui llega bn";
     comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
     comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
+    
     QuickSort(comp1,0,tam);
     tipo(comp1);    
+    system("pause");
 
 }
 
@@ -53,6 +65,7 @@ vector<float>Capt_tiempos(int ns){
         cout<<"Hola"<<endl;
         //Termina bloque de codigo
         estampa=clock()-estampa;
+        
         Tiempos.push_back((float)estampa);
     }
     return Tiempos;
@@ -90,7 +103,7 @@ float P_punto(vector<float>X,vector<float>Y){
             }
             return suma;
         }
-        return ;
+        return 0;
         
 }
 
@@ -154,5 +167,44 @@ void QuickSort(Tipo_graph *array, int inicio, int final) {
 
 
         
-
+vector<float>graph_parabolica(int tam){
+    vector<float>valores;
+    for (int i = 0; i < tam; i++)
+    {
+        valores.push_back(pow(i,2));
+    }
+    return valores;
+    
+}
    
+vector<float>graph_lineal(int tam){
+    vector<float>valores;
+    for (int i = 0; i < tam; i++)
+    {
+        valores.push_back(i);
+    }
+    return valores;
+}
+
+
+vector<float>graph_log(int tam){
+    float i=.001;
+    vector<float>valores;
+    while (i<tam)
+    {
+        valores.push_back(log10(i));
+        i++;
+    }
+    
+    return valores;
+}
+
+
+vector<float>graph_const(int tam){
+    vector<float>valores;
+    for (int  i = 0; i < tam; i++)
+    {
+        valores.push_back(1);
+    }
+    return valores;
+}
