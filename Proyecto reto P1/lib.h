@@ -33,7 +33,7 @@ void func_prin(){
     Tipo_graph *comp1;
     vector<float>tiempos=Capt_tiempos(5);
     int tam=tiempos.size();
-    comp1=(Tipo_graph*)malloc(tam*sizeof(Tipo_graph));
+    comp1=(Tipo_graph*)calloc(tam,sizeof(Tipo_graph));
     if (!comp1)
     {
         exit;
@@ -44,10 +44,9 @@ void func_prin(){
     vector<float>lineal=graph_lineal(tam);
     vector<float>logaritmica=graph_log(tam);
     comp1[0].correlation=C_correlacion(tiempos,constante);comp1[0].id="Constante";
-    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolic";cout<<"Aqui llega bn";
+    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolic";
     comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
     comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
-    
     QuickSort(comp1,0,tam);
     tipo(comp1);    
     system("pause");
@@ -65,7 +64,6 @@ vector<float>Capt_tiempos(int ns){
         cout<<"Hola"<<endl;
         //Termina bloque de codigo
         estampa=clock()-estampa;
-        
         Tiempos.push_back((float)estampa);
     }
     return Tiempos;
@@ -100,6 +98,8 @@ float P_punto(vector<float>X,vector<float>Y){
             {
                 aux=X.back()*Y.back();
                 suma=suma+aux;
+                X.pop_back();
+                Y.pop_back();
             }
             return suma;
         }
