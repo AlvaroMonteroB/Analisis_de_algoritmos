@@ -23,7 +23,7 @@ vector<float>graph_const(int tam);
 vector<float>graph_parabolica(int tam);
 vector<float>graph_lineal(int tam);
 vector<float>graph_log(int tam);
-void QuickSort(Tipo_graph *array, int inicio, int final);
+Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 
 
 
@@ -47,7 +47,7 @@ void func_prin(){
     comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolic";
     comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
     comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
-    QuickSort(comp1,0,tam);
+    comp1=QuickSort(comp1,0,tam);
     
     tipo(comp1);    
     system("pause");
@@ -90,7 +90,6 @@ float C_correlacion(vector<float>X,vector<float>Y){
         }
         
         correlacion=((X.size()*xpy)-(x1*y1))/(aux1*aux2);
-        cout<<correlacion<<endl;
         return correlacion;
 
 }
@@ -146,7 +145,7 @@ void tipo(Tipo_graph* a){
 }
 
 
-void QuickSort(Tipo_graph *array, int inicio, int final) {
+Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final) {
   int i = inicio, f = final;
   Tipo_graph tmp;
   float x = array[(inicio + final) / 2].correlation;
@@ -159,8 +158,11 @@ void QuickSort(Tipo_graph *array, int inicio, int final) {
             }
             if(i <= f) {
             tmp = array[i];
+            cout<<"Aqui se muere"<<endl;
+            cout<<array[i+1].correlation;
             array[i] = array[f];
             array[f] = tmp;
+            
             i++; f--;
             }
    }         while(i <= f);
@@ -172,7 +174,7 @@ void QuickSort(Tipo_graph *array, int inicio, int final) {
        if(i < final){
          QuickSort(array,i,final);
        }
-
+        return array;
 }
 
 
