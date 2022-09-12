@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<vector>
-#include<ctime> 
+#include<time.h> 
 #include<queue>
 #include<math.h>
 #include<string.h>
@@ -48,6 +48,7 @@ void func_prin(){
     comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
     comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
     QuickSort(comp1,0,tam);
+    
     tipo(comp1);    
     system("pause");
 
@@ -64,8 +65,8 @@ vector<float>Capt_tiempos(int ns){
         cout<<"Hola"<<endl;
         //Termina bloque de codigo
         estampa=clock()-estampa;
-        Tiempos.push_back((float)estampa);
-        cout<<((float)Tiempos.back());
+        Tiempos.push_back(float(estampa));
+        
     }
     return Tiempos;
 }
@@ -82,8 +83,14 @@ float C_correlacion(vector<float>X,vector<float>Y){
         float correlacion=0;
         aux1=sqrt(X.size()*xx-(x1*x1));
         aux2=sqrt(Y.size()*yy-(y1*y1));
-        correlacion=(X.size()*xpy-x1*y1)/(aux1*aux2);
-        cout<<correlacion;
+        if (aux1==0||aux2==0)
+        {
+            
+            return 0;
+        }
+        
+        correlacion=((X.size()*xpy)-(x1*y1))/(aux1*aux2);
+        cout<<correlacion<<endl;
         return correlacion;
 
 }
@@ -105,6 +112,7 @@ float P_punto(vector<float>X,vector<float>Y){
             }
             return suma;
         }
+        
         return 0;
         
 }
@@ -141,7 +149,7 @@ void tipo(Tipo_graph* a){
 void QuickSort(Tipo_graph *array, int inicio, int final) {
   int i = inicio, f = final;
   Tipo_graph tmp;
-  int x = array[(inicio + final) / 2].correlation;
+  float x = array[(inicio + final) / 2].correlation;
         do {
             while(array[i].correlation < x && f <= final) {
             i++;
