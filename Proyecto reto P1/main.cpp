@@ -8,7 +8,7 @@ int main(){
     char opt;
     while(set){
         func_prin();
-        cout<<"Quieres repetir la operacion? s/n";
+        cout<<"Quieres repetir la operacion? s/n"<<endl;
         cin>>opt;
         if (opt=='s')
         {
@@ -16,7 +16,7 @@ int main(){
         }else{
             set=false;
         }
-        
+        system("cls");
     }
     return 0;
 }

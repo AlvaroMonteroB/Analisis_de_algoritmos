@@ -47,7 +47,7 @@ void func_prin(){
     comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolic";
     comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
     comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
-    comp1=QuickSort(comp1,0,tam);
+    comp1=QuickSort(comp1,0,tam-1);
     
     tipo(comp1);    
     system("pause");
@@ -131,15 +131,15 @@ void tipo(Tipo_graph* a){
         float comp=-a[0].correlation;
         if (comp>a[3].correlation)//vemos si en el valor absoluto son mayores o menores
         {
-            cout<<"Es de tipo "<<a[0].id;
+            cout<<"Es de tipo "<<a[0].id<<endl;
         }
     
     }else if(a[0].correlation>0){
-            cout<<"Es de tipo "<<a[3].id;
+            cout<<"Es de tipo "<<a[3].id<<endl;
     }else if(a[3].correlation<0){
-            cout<<"Es de tipo"<<a[0].id;
+            cout<<"Es de tipo"<<a[0].id<<endl;
     }else{
-            cout<<"Es de tipo "<<a[3].id;
+            cout<<"Es de tipo "<<a[3].id<<endl;
     }
     
 }
@@ -158,8 +158,6 @@ Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final) {
             }
             if(i <= f) {
             tmp = array[i];
-            cout<<"Aqui se muere"<<endl;
-            cout<<array[i+1].correlation;
             array[i] = array[f];
             array[f] = tmp;
             
