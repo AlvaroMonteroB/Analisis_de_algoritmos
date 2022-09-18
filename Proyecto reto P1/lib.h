@@ -62,7 +62,7 @@ vector<float>Capt_tiempos(int ns){
     {
         estampa=clock();
         //Bloque de codigo por analizar
-        cout<<"Hola"<<endl;
+           cout<<"Hola"<<endl;
         //Termina bloque de codigo
         estampa=clock()-estampa;
         Tiempos.push_back(float(estampa));
