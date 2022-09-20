@@ -248,7 +248,7 @@ int render_graphic(vector<float>value){
         namedWindow("Grafica",WINDOW_AUTOSIZE);
         imshow("Grafica",fondo);
         waitKey(0); 
-        cout<<"Grafico generado"<<endl;
+        cout<<"Grafico generado "<<endl;
         return 0;
     
         
