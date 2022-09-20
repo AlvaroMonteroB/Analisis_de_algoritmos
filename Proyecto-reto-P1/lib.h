@@ -26,6 +26,7 @@ vector<float>graph_parabolica(int tam);
 vector<float>graph_lineal(int tam);
 vector<float>graph_log(int tam);
 Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
+void analisis(int ns);
 
 
 
@@ -48,7 +49,7 @@ void func_prin(){
     vector<float>lineal=graph_lineal(tam);
     vector<float>logaritmica=graph_log(tam);
     comp1[0].correlation=C_correlacion(tiempos,constante);comp1[0].id="Constante";
-    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolic";
+    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolica";
     comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
     comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
     comp1=QuickSort(comp1,0,tam-1);
@@ -66,12 +67,13 @@ vector<float>Capt_tiempos(int ns){
     {
         estampa=clock();
         //Bloque de codigo por analizar
-           cout<<"Hola"<<endl;
+        analisis(ns);
         //Termina bloque de codigo
         estampa=clock()-estampa;
         Tiempos.push_back(float(estampa));
         
     }
+    cout<<(float)Tiempos.back();
     return Tiempos;
 }
 
@@ -140,7 +142,7 @@ void tipo(Tipo_graph* a){
     
     }else if(a[0].correlation>0){
             cout<<"Es de tipo "<<a[3].id<<endl;
-    }else if(a[3].correlation<0){
+    }else if(a[3].correlation<0){ 
             cout<<"Es de tipo"<<a[0].id<<endl;
     }else{
             cout<<"Es de tipo "<<a[3].id<<endl;
@@ -228,21 +230,20 @@ int render_graphic(vector<float>value){
         typedef Point_<float> pointfloat;
         Mat fondo(500, 500, CV_8UC3,
               Scalar(255, 255, 255));
-              auto it=minmax_element(value.begin(),value.end());
         if (!fondo.data)
         {
             cout<<"couldn't create image"<<endl;
             return 0;
         }
-        Point uno(0,0),dos(250,250);
-        pointfloat pos(0,250);
-        for (int i = (int)value.size(); i >0; i--)
+        
+        
+        for (int i = (int)value.size()-1; i >0; i--)
         {
-           pointfloat aux=(i,value.front());
+            pointfloat pos(value.size()*50,value.back()*50);
+            value.pop_back();
+           pointfloat aux=(i*50,value.back()*50);
             line(fondo,pos*50,aux*50,Scalar(0,0,0),4,LINE_4);
             
-            pos=aux;
-            value.pop_back();
         }
         namedWindow("Grafica",WINDOW_AUTOSIZE);
         imshow("Grafica",fondo);
@@ -251,4 +252,13 @@ int render_graphic(vector<float>value){
         return 0;
     
         
+}
+
+
+void analisis(int ns){
+    for (int i = 0; i < ns; i++)
+    {
+        cout<<"Hola";
+    }
+       
 }
