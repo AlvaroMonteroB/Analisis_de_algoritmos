@@ -13,7 +13,7 @@ using namespace cv;
 //===================================================================
 typedef struct{
         float correlation;
-        string id;
+        char id[11];
 
 }Tipo_graph;
 //===================================================================
@@ -58,11 +58,19 @@ void func_prin(){
     vector<float>parabola=graph_parabolica(tam);
     vector<float>lineal=graph_lineal(tam);
     vector<float>logaritmica=graph_log(tam);
-    comp1[0].correlation=C_correlacion(tiempos,constante);comp1[0].id="Constante";
-    comp1[1].correlation=C_correlacion(tiempos,parabola);comp1[1].id="Parabolica";
-    comp1[2].correlation=C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
-    comp1[3].correlation=C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
+    comp1[0].correlation=C_correlacion(tiempos,constante);//comp1[0].id="Constante";
+    strcpy(comp1[0].id,"Constante");
+    comp1[1].correlation=C_correlacion(tiempos,parabola);//comp1[1].id="Parabolica";
+    strcpy(comp1[1].id,"Parabolica");
+    comp1[2].correlation=C_correlacion(tiempos,lineal);//comp1[2].id="Lineal";
+    strcpy(comp1[2].id,"Lineal");
+    comp1[3].correlation=C_correlacion(tiempos,logaritmica);//comp1[3].id="Logaritmica";
+    strcpy(comp1[3].id,"Logaritmica");
     comp1=QuickSort(comp1,0,tam-1);
+    for (int i = 0; i < 4; i++)
+    {
+        cout<<comp1[i].id<<endl;
+    }
     
     tipo(comp1);    
     system("pause");
@@ -84,7 +92,7 @@ vector<float>Capt_tiempos(int ns){
         Tiempos.push_back(float(estampa));
         
     }
-    cout<<(float)Tiempos.back();
+    cout<<(float)Tiempos.back()<<endl;
     return Tiempos;
 }
 
@@ -258,7 +266,7 @@ int render_graphic(vector<float>value){
         
         
         namedWindow("Grafica",WINDOW_AUTOSIZE);
-        //moveWindow("Grafica",300,140);
+        moveWindow("Grafica",300,140);
         imshow("Grafica",fondo);
         waitKey(0); 
         cout<<"Grafico generado "<<endl;
@@ -269,8 +277,8 @@ int render_graphic(vector<float>value){
 
 
 void analisis(int ns){
-    
-        cout<<"Hola";
+        cout<<"hola";
+        
     
        
 }
@@ -304,6 +312,8 @@ void notacion(vector<float> vect){
     case 6:
         
         break;
+    case 7:
+        break;
     default:
     cout<<"Introduce una opcion valida"<<endl;
         break;
@@ -322,6 +332,7 @@ int obtenerMayor(vector<float>Tiempos){
                 Mayor=Tiempos[i];
         }
     }
+    cout<<Mayor<<endl;
     return Mayor;
 }
 
