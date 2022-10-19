@@ -4,16 +4,21 @@
 #include<opencv2/opencv.hpp>
 #include<vector>
 #include<time.h> 
-#include<queue>
 #include<math.h>
 #include<string.h>
 using namespace std;
 using namespace cv;
+//===================================================================
+//=================================Estructura========================
+//===================================================================
 typedef struct{
         float correlation;
         string id;
 
 }Tipo_graph;
+//===================================================================
+//===========================PROTOTIPOS DE FUNCIONES==============================
+//===================================================================
 vector<float>Capt_tiempos(int ns);
 float C_correlacion(vector<float>X,vector<float>Y);
 float P_punto(vector<float>X,vector<float>Y);
@@ -27,14 +32,19 @@ vector<float>graph_lineal(int tam);
 vector<float>graph_log(int tam);
 Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
+void notacion(vector<float> vect);
+int obtenerMayor(vector<float>Tiempos);
+void BigO(vector<float>tiempos);
 
 
-
+//===================================================================
+//===========================FUNCIONES==============================
+//===================================================================
 
 
 void func_prin(){
     Tipo_graph *comp1;
-    vector<float>tiempos=Capt_tiempos(5);
+    vector<float>tiempos=Capt_tiempos(400);
     render_graphic(tiempos);
     int tam=tiempos.size();
     comp1=(Tipo_graph*)calloc(tam,sizeof(Tipo_graph));
@@ -56,6 +66,7 @@ void func_prin(){
     
     tipo(comp1);    
     system("pause");
+    notacion(tiempos);
 
 }
 
@@ -228,24 +239,26 @@ vector<float>graph_const(int tam){
 
 int render_graphic(vector<float>value){
         typedef Point_<float> pointfloat;
-        Mat fondo(500, 500, CV_8UC3,
+        int num=obtenerMayor(value);
+        Mat fondo(num*20, (int)value.size(), CV_64FC4,
               Scalar(255, 255, 255));
         if (!fondo.data)
         {
             cout<<"couldn't create image"<<endl;
             return 0;
         }
-        
-        
-        for (int i = (int)value.size()-1; i >0; i--)
+        for (int i = 1; i < value.size(); i++)
         {
-            pointfloat pos(value.size()*50,value.back()*50);
-            value.pop_back();
-           pointfloat aux=(i*50,value.back()*50);
-            line(fondo,pos*50,aux*50,Scalar(0,0,0),4,LINE_4);
-            
+            Point ini(i-1,(int)value[i-1]*20);
+            Point fin(i,(int)value[i]*20);
+            Scalar color(255,0,0);
+            line (fondo,ini,fin,color,1);
         }
+        
+        
+        
         namedWindow("Grafica",WINDOW_AUTOSIZE);
+        //moveWindow("Grafica",300,140);
         imshow("Grafica",fondo);
         waitKey(0); 
         cout<<"Grafico generado "<<endl;
@@ -256,9 +269,63 @@ int render_graphic(vector<float>value){
 
 
 void analisis(int ns){
-    for (int i = 0; i < ns; i++)
-    {
+    
         cout<<"Hola";
-    }
+    
        
+}
+
+
+void notacion(vector<float> vect){
+    int opt;
+    
+    do
+    {
+    cout<<"Selecciona que notación quieres"<<endl<<"1.-Big O"<<endl<<"2.-Little O"<<endl;
+    cout<<"3.-Big Omega"<<endl<<"4.-Little Omega"<<endl<<"5.-Big Theta"<<endl<<"6.-Little Theta"<<endl<<"7.-Salir del programa"<<endl;
+    cin>>opt;
+    switch (opt)
+    {
+    case 1:
+        BigO(vect);
+        break;
+    case 2:
+        
+        break;
+    case 3:
+        
+        break;
+    case 4:
+        
+        break;
+    case 5:
+        
+        break;
+    case 6:
+        
+        break;
+    default:
+    cout<<"Introduce una opcion valida"<<endl;
+        break;
+    }
+    } while (opt<7);
+    
+}
+
+int obtenerMayor(vector<float>Tiempos){
+    int Mayor=0;
+    for (int i=0; i<Tiempos.size(); i++) {
+        if(i==0)
+            Mayor=Tiempos[i];
+        else{
+            if(Tiempos[i]>Mayor)
+                Mayor=Tiempos[i];
+        }
+    }
+    return Mayor;
+}
+
+
+void BigO(vector<float>tiempos){
+    
 }
