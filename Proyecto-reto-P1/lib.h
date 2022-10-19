@@ -17,7 +17,7 @@ typedef struct{
 
 }Tipo_graph;
 //===================================================================
-//===========================PROTOTIPOS DE FUNCIONES==============================
+//===========================PROTOTIPOS DE FUNCIONES=================
 //===================================================================
 vector<float>Capt_tiempos(int ns);
 float C_correlacion(vector<float>X,vector<float>Y);
