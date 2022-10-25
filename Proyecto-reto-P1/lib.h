@@ -13,7 +13,7 @@ using namespace cv;
 //===================================================================
 typedef struct{
         float correlation;
-        char id[11];
+        string id;
 
 }Tipo_graph;
 //===================================================================
@@ -43,30 +43,31 @@ void BigO(vector<float>tiempos);
 
 
 void func_prin(){
-    Tipo_graph *comp1;
-    vector<float>tiempos=Capt_tiempos(400);
+    Tipo_graph *comp1=NULL;
+    int tam=400;
+    vector<float>tiempos=Capt_tiempos(tam);
     render_graphic(tiempos);
-    int tam=tiempos.size();
-    comp1=(Tipo_graph*)calloc(tam,sizeof(Tipo_graph));
+    
+    comp1=(Tipo_graph*)malloc(4*sizeof(Tipo_graph));
+    
     if (!comp1)
-    {
-        perror("Error");
+    {   
+        exit(5);  
     }
-
     
     vector<float>constante=graph_const(tam);
     vector<float>parabola=graph_parabolica(tam);
     vector<float>lineal=graph_lineal(tam);
     vector<float>logaritmica=graph_log(tam);
-    comp1[0].correlation=C_correlacion(tiempos,constante);//comp1[0].id="Constante";
-    strcpy(comp1[0].id,"Constante");
-    comp1[1].correlation=C_correlacion(tiempos,parabola);//comp1[1].id="Parabolica";
-    strcpy(comp1[1].id,"Parabolica");
-    comp1[2].correlation=C_correlacion(tiempos,lineal);//comp1[2].id="Lineal";
-    strcpy(comp1[2].id,"Lineal");
-    comp1[3].correlation=C_correlacion(tiempos,logaritmica);//comp1[3].id="Logaritmica";
-    strcpy(comp1[3].id,"Logaritmica");
-    comp1=QuickSort(comp1,0,tam-1);
+    comp1[0].correlation=(float)C_correlacion(tiempos,constante);comp1[0].id="Constante";
+    
+    comp1[1].correlation=(float)C_correlacion(tiempos,parabola);comp1[1].id="Parabolica";
+    
+    comp1[2].correlation=(float)C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
+
+    comp1[3].correlation=(float)C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
+
+    comp1=QuickSort(comp1,0,3);
     for (int i = 0; i < 4; i++)
     {
         cout<<comp1[i].id<<endl;
@@ -97,6 +98,11 @@ vector<float>Capt_tiempos(int ns){
 }
 
 float C_correlacion(vector<float>X,vector<float>Y){
+        if (X.size()!=Y.size())
+        {
+            cout<<"El vector no es del mismo tamaño"<<endl;
+        }
+        
         vector<float>vecx=vect_1(X.size());
         vector<float>vecy=vect_1(Y.size());
         float aux1,aux2;
