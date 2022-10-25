@@ -229,9 +229,9 @@ vector<float>graph_lineal(int tam){
 
 
 vector<float>graph_log(int tam){
-    float i=.01;
+    int i=1;
     vector<float>valores;
-    while (i<tam)
+    while (i<tam+1)
     {
         valores.push_back(log10(i));
         i++;
