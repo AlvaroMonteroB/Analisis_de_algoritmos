@@ -11,11 +11,18 @@ using namespace cv;
 //===================================================================
 //=================================Estructura========================
 //===================================================================
+
 typedef struct{
         float correlation;
-        string id;
+        //string id;
+        char id[11];
 
 }Tipo_graph;
+
+typedef struct{
+    float pendiente;
+    int punto;
+}punto_pendiente;
 //===================================================================
 //===========================PROTOTIPOS DE FUNCIONES=================
 //===================================================================
@@ -25,16 +32,17 @@ float P_punto(vector<float>X,vector<float>Y);
 vector<float>vect_1(int size);
 int render_graphic(vector<float>value);
 void func_prin();
-void tipo(Tipo_graph* a);
+Tipo_graph tipo(Tipo_graph* a);
 vector<float>graph_const(int tam);
 vector<float>graph_parabolica(int tam);
 vector<float>graph_lineal(int tam);
 vector<float>graph_log(int tam);
 Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
-void notacion(vector<float> vect);
+void notacion(vector<float> vect,Tipo_graph tipo);
 int obtenerMayor(vector<float>Tiempos);
-void BigO(vector<float>tiempos);
+void BigO(vector<float>tiempos, Tipo_graph tipo);
+punto_pendiente obtenerMayorfloat(vector<float>Tiempos);
 
 
 //===================================================================
@@ -44,6 +52,8 @@ void BigO(vector<float>tiempos);
 
 void func_prin(){
     Tipo_graph *comp1=NULL;
+    Tipo_graph ret;
+    
     int tam=400;
     vector<float>tiempos=Capt_tiempos(tam);
     render_graphic(tiempos);
@@ -59,23 +69,25 @@ void func_prin(){
     vector<float>parabola=graph_parabolica(tam);
     vector<float>lineal=graph_lineal(tam);
     vector<float>logaritmica=graph_log(tam);
-    comp1[0].correlation=(float)C_correlacion(tiempos,constante);comp1[0].id="Constante";
-    
-    comp1[1].correlation=(float)C_correlacion(tiempos,parabola);comp1[1].id="Parabolica";
-    
-    comp1[2].correlation=(float)C_correlacion(tiempos,lineal);comp1[2].id="Lineal";
-
-    comp1[3].correlation=(float)C_correlacion(tiempos,logaritmica);comp1[3].id="Logaritmica";
-
+    comp1[0].correlation=(float)C_correlacion(tiempos,constante);cout<<comp1[0].correlation;system("pause");//comp1[0].id="Constante";
+    strcpy(comp1[0].id,"Constante");
+    comp1[1].correlation=(float)C_correlacion(tiempos,parabola);//comp1[1].id._Copy_s();
+    strcpy(comp1[1].id,"Parabolica");
+    comp1[2].correlation=(float)C_correlacion(tiempos,lineal);//comp1[2].id="Lineal";
+    strcpy(comp1[2].id,"Lineal");
+    comp1[3].correlation=(float)C_correlacion(tiempos,logaritmica);//comp1[3].id="Logaritmica";
+    strcpy(comp1[3].id,"Logaritmica");
     comp1=QuickSort(comp1,0,3);
     for (int i = 0; i < 4; i++)
     {
-        cout<<comp1[i].id<<endl;
+        cout<<comp1[i].id<<" Correlacion: "<<comp1[i].correlation<<endl;
+        
     }
-    
-    tipo(comp1);    
+
+    ret=tipo(comp1);
     system("pause");
-    notacion(tiempos);
+    system("cls");
+    notacion(tiempos,ret);
 
 }
 
@@ -156,21 +168,28 @@ vector<float>vect_1(int size){
     return vect;
 }
 
-void tipo(Tipo_graph* a){
-    if (a[0].correlation<0&&a[3].correlation>0)
+Tipo_graph tipo(Tipo_graph* a){
+    if (a[0].correlation<=0&&a[3].correlation>=0)
     {
         float comp=-a[0].correlation;
         if (comp>a[3].correlation)//vemos si en el valor absoluto son mayores o menores
         {
             cout<<"Es de tipo "<<a[0].id<<endl;
+            return a[0];
+        }else{
+            cout<<"Es de tipo "<<a[3].id<<endl;
+            return a[3];
         }
     
     }else if(a[0].correlation>0){
             cout<<"Es de tipo "<<a[3].id<<endl;
+            return a[3];
     }else if(a[3].correlation<0){ 
             cout<<"Es de tipo"<<a[0].id<<endl;
+            return a[0];
     }else{
             cout<<"Es de tipo "<<a[3].id<<endl;
+            return a[3];
     }
     
 }
@@ -283,14 +302,19 @@ int render_graphic(vector<float>value){
 
 
 void analisis(int ns){
-        cout<<"hola";
+        for (int i = 0; i < 10; i++)
+        {
+            cout<<"hola";
+        }
+        
+        
         
     
        
 }
 
 
-void notacion(vector<float> vect){
+void notacion(vector<float> vect, Tipo_graph tipo){
     int opt;
     
     do
@@ -301,7 +325,7 @@ void notacion(vector<float> vect){
     switch (opt)
     {
     case 1:
-        BigO(vect);
+        BigO(vect, tipo);
         break;
     case 2:
         
@@ -338,11 +362,43 @@ int obtenerMayor(vector<float>Tiempos){
                 Mayor=Tiempos[i];
         }
     }
-    cout<<Mayor<<endl;
     return Mayor;
 }
 
 
-void BigO(vector<float>tiempos){
+punto_pendiente obtenerMayorfloat(vector<float>Vect){
+    punto_pendiente Mayor;
+    for (int i=0; i<Vect.size(); i++) {
+        if(i==0)
+            Mayor.pendiente=Vect[i];
+        else{
+            if(Vect[i]>Mayor.pendiente)
+                Mayor.pendiente=Vect[i];
+                Mayor.punto=i;
+        }
+    }
+    return Mayor;
+}
+
+
+
+void BigO(vector<float>tiempos, Tipo_graph tipo){
+    float  abj, arr,may;
+    punto_pendiente pendiente;
+    vector<float> m;
+    for (int i = 1; i < tiempos.size(); i++)
+    {
+        arr=tiempos.back()-0;
+        abj=i-0;
+        m.push_back(arr/abj);
+        }
+        pendiente=obtenerMayorfloat(m);
+        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<pendiente.pendiente<<")"<<endl;
+        if (tipo.id=="Parabolica")
+        {
+            float exp;
+        }
+        
+
     
 }
