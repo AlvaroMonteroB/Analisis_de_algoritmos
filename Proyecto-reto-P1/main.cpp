@@ -1,3 +1,5 @@
+/* ▪* Montero Barraza Alvaro David*
+ 3BV1▪* Ingenieria en IA ▪* ▪*/
 #include<iostream>
 #include "lib.h"
 using namespace std;

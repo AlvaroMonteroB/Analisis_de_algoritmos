@@ -1,3 +1,5 @@
+/* ▪* Montero Barraza Alvaro David*
+ 3BV1▪* Ingenieria en IA ▪* ▪*/
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
@@ -5,6 +7,7 @@
 #include<vector>
 #include<time.h> 
 #include<math.h>
+#include"algoritmos.h"
 #include<string.h>
 using namespace std;
 using namespace cv;
@@ -85,6 +88,7 @@ void func_prin(){
     }
 
     ret=tipo(comp1);
+    free(comp1);
     system("pause");
     system("cls");
     notacion(tiempos,ret);
@@ -95,18 +99,85 @@ void func_prin(){
 vector<float>Capt_tiempos(int ns){
     vector<float>Tiempos;
     clock_t estampa;
-    for (int i = 0; i < ns; i++)
+    int arr[10];
+     int *array=(int*)calloc(10,sizeof(int));
+    for (int i = 0; i < 10; i++)
     {
-        estampa=clock();
-        //Bloque de codigo por analizar
-        analisis(ns);
-        //Termina bloque de codigo
-        estampa=clock()-estampa;
-        Tiempos.push_back(float(estampa));
-        
+        arr[i]=rand();
     }
-    cout<<(float)Tiempos.back()<<endl;
+    
+    int opt=0;
+    cout<<"Que algoritmo quieres analizar?"<<endl;
+    cout<<"1.-Mergesort"<<endl<<"2.-Quicksort"<<endl<<"3.-Burbuja"<<endl;
+    while (opt==0)
+    {   
+        cin>>opt;
+        switch (opt)
+    {
+        case 1:
+                for (int i = 0; i < ns; i++)
+            {
+                array=arr;
+                estampa=clock();
+                //Bloque de codigo por analizar
+                array=merges(10,array);
+                //Termina bloque de codigo
+                estampa=clock()-estampa;
+                Tiempos.push_back(float(estampa));
+                
+            }
+            for (int i = 0; i < 10; i++)
+                {
+                    cout<<array[i]<<", ";
+                }
+                return Tiempos;
+            break;
+         case 2:
+                for (int i = 0; i < ns; i++)
+            {
+                array=arr;
+                estampa=clock();
+                //Bloque de codigo por analizar
+                array=quick(10,array);
+                //Termina bloque de codigo
+                estampa=clock()-estampa;
+                Tiempos.push_back(float(estampa));
+                
+            }
+                for (int i = 0; i < 10; i++)
+                {
+                    cout<<array[i]<<", ";
+                }
+                
+                return Tiempos;
+            break;
+        case 3:
+                for (int i = 0; i < ns; i++)
+            {
+                array=arr;
+                estampa=clock();
+                //Bloque de codigo por analizar
+                array=burbuja(10,array);
+                //Termina bloque de codigo
+                estampa=clock()-estampa;
+                Tiempos.push_back(float(estampa));
+                
+            }
+            for (int i = 0; i < 10; i++)
+                {
+                    cout<<array[i]<<", ";
+                }
+                 return Tiempos;
+        
+            break;
+        default:
+    cout<<"Introduce una opción válida"<<endl;
+    opt=0;
+        break;
+    }
+    }
     return Tiempos;
+    
 }
 
 float C_correlacion(vector<float>X,vector<float>Y){
@@ -383,7 +454,7 @@ punto_pendiente obtenerMayorfloat(vector<float>Vect){
 
 
 void BigO(vector<float>tiempos, Tipo_graph tipo){
-    float  abj, arr,may;
+    float  abj, arr;
     punto_pendiente pendiente;
     vector<float> m;
     for (int i = 1; i < tiempos.size(); i++)
@@ -393,10 +464,10 @@ void BigO(vector<float>tiempos, Tipo_graph tipo){
         m.push_back(arr/abj);
         }
         pendiente=obtenerMayorfloat(m);
-        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<pendiente.pendiente<<")"<<endl;
+        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
         if (tipo.id=="Parabolica")
         {
-            float exp;
+            
         }
         
 
