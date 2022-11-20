@@ -6,7 +6,7 @@
  #include<time.h>
 
 
- int *burbuja( int tam,int *array){
+ void burbuja( int tam,int *&array){
              int temp;
             for (int i = 0; i < tam; i++)
             {
@@ -18,13 +18,8 @@
                        array[j]=array[j+1];
                        array[j+1]=temp;
                    }
-
                }
-               
             }   
-            return array;
-            
-
  }
 
  /*int insercion(int tam){
@@ -170,7 +165,7 @@ int* merges(int tam,int *array){
     return array;
 }
 
-void QuickSort(int *array, int inicio, int final) {
+void QuickSort(int *&array, int inicio, int final) {
   int i = inicio, f = final, tmp;
   int x = array[(inicio + final) / 2];
         do {
@@ -198,11 +193,9 @@ void QuickSort(int *array, int inicio, int final) {
 
 }
 
-
-
-int* quick(int tam,int *array){
+void quick(int tam,int *&array){
             QuickSort(array,0,tam-1);
-    return array;
+    
 
 }
 

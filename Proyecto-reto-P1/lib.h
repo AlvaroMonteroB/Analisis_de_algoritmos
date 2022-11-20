@@ -1,16 +1,22 @@
 /* ▪* Montero Barraza Alvaro David*
  3BV1▪* Ingenieria en IA ▪* ▪*/
+#define CVPLOT_HEADER_ONLY
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
 #include<opencv2/opencv.hpp>
 #include<vector>
 #include<time.h> 
-#include<math.h>
 #include"algoritmos.h"
 #include<string.h>
+#include<cmath>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <cvplot.h>
 using namespace std;
 using namespace cv;
+
 //===================================================================
 //=================================Estructura========================
 //===================================================================
@@ -26,6 +32,8 @@ typedef struct{
     float pendiente;
     int punto;
 }punto_pendiente;
+
+
 //===================================================================
 //===========================PROTOTIPOS DE FUNCIONES=================
 //===================================================================
@@ -44,8 +52,9 @@ Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
 void notacion(vector<float> vect,Tipo_graph tipo);
 int obtenerMayor(vector<float>Tiempos);
-void BigO(vector<float>tiempos, Tipo_graph tipo);
+float BigO(vector<float>tiempos, Tipo_graph tipo);
 punto_pendiente obtenerMayorfloat(vector<float>Tiempos);
+float logbn(float b, float n);
 
 
 //===================================================================
@@ -97,11 +106,12 @@ void func_prin(){
 
 
 vector<float>Capt_tiempos(int ns){
+    int constante=500;
     vector<float>Tiempos;
     clock_t estampa;
-    int arr[10];
-     int *array=(int*)calloc(10,sizeof(int));
-    for (int i = 0; i < 10; i++)
+    int arr[500];
+     int *array=(int*)calloc(constante,sizeof(int));
+    for (int i = 0; i < constante; i++)
     {
         arr[i]=rand();
     }
@@ -120,7 +130,7 @@ vector<float>Capt_tiempos(int ns){
                 array=arr;
                 estampa=clock();
                 //Bloque de codigo por analizar
-                array=merges(10,array);
+                array=merges(500,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
                 Tiempos.push_back(float(estampa));
@@ -138,7 +148,7 @@ vector<float>Capt_tiempos(int ns){
                 array=arr;
                 estampa=clock();
                 //Bloque de codigo por analizar
-                array=quick(10,array);
+                quick(500,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
                 Tiempos.push_back(float(estampa));
@@ -157,7 +167,7 @@ vector<float>Capt_tiempos(int ns){
                 array=arr;
                 estampa=clock();
                 //Bloque de codigo por analizar
-                array=burbuja(10,array);
+                burbuja(500,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
                 Tiempos.push_back(float(estampa));
@@ -453,8 +463,8 @@ punto_pendiente obtenerMayorfloat(vector<float>Vect){
 
 
 
-void BigO(vector<float>tiempos, Tipo_graph tipo){
-    float  abj, arr;
+float BigO(vector<float>tiempos, Tipo_graph tipo){
+    float  abj, arr,result;
     punto_pendiente pendiente;
     vector<float> m;
     for (int i = 1; i < tiempos.size(); i++)
@@ -465,11 +475,23 @@ void BigO(vector<float>tiempos, Tipo_graph tipo){
         }
         pendiente=obtenerMayorfloat(m);
         cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
+        cout<<"La pendiente obtenida es: "<<pendiente.pendiente;
         if (tipo.id=="Parabolica")
         {
+            result=logbn(pendiente.punto,tiempos[pendiente.punto]);
+            cout<<"La ecuacion de tu funcion es: O(X^"<<result;
+            return result;
             
         }
         
 
     
+}
+
+
+float logbn(float b, float n){
+    float lg;
+    lg=log(n)/log(b);
+    return lg;
+
 }
