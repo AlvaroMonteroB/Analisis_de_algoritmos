@@ -13,7 +13,6 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <cvplot.h>
 using namespace std;
 using namespace cv;
 
@@ -479,7 +478,7 @@ float BigO(vector<float>tiempos, Tipo_graph tipo){
         if (tipo.id=="Parabolica")
         {
             result=logbn(pendiente.punto,tiempos[pendiente.punto]);
-            cout<<"La ecuacion de tu funcion es: O(X^"<<result;
+            cout<<"La ecuacion de tu funcion es: O(X^"<<result<<") "<<endl;
             return result;
             
         }
@@ -490,8 +489,5 @@ float BigO(vector<float>tiempos, Tipo_graph tipo){
 
 
 float logbn(float b, float n){
-    float lg;
-    lg=log(n)/log(b);
-    return lg;
-
+    return log(n)/log(b);
 }
