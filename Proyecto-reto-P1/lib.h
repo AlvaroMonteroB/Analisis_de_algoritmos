@@ -33,9 +33,9 @@ typedef struct{
 }punto_pendiente;
 
 typedef struct{
-        float *Exp;
-        float *Line;
-        float *Logbn;
+        float *Exp=NULL;
+        float *Line=NULL;
+        float *Logbn=NULL;
 }Tipo_eqn;
 
 
@@ -504,9 +504,9 @@ Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo,Mat *&matriz){
 
         }else if(tipo.id=="Logaritmica"){
             float e;
-
+            
         }
-
+        return result;
     
 }
 
