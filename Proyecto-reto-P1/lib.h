@@ -32,6 +32,12 @@ typedef struct{
     int punto;
 }punto_pendiente;
 
+typedef struct{
+        float *Exp;
+        float *Line;
+        float *Logbn;
+}Tipo_eqn;
+
 
 //===================================================================
 //===========================PROTOTIPOS DE FUNCIONES=================
@@ -40,7 +46,7 @@ vector<float>Capt_tiempos(int ns);
 float C_correlacion(vector<float>X,vector<float>Y);
 float P_punto(vector<float>X,vector<float>Y);
 vector<float>vect_1(int size);
-int render_graphic(vector<float>value);
+int render_graphic(vector<float>value,Mat *&matriz);
 void func_prin();
 Tipo_graph tipo(Tipo_graph* a);
 vector<float>graph_const(int tam);
@@ -49,11 +55,14 @@ vector<float>graph_lineal(int tam);
 vector<float>graph_log(int tam);
 Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
-void notacion(vector<float> vect,Tipo_graph tipo);
+void notacion(vector<float> vect,Tipo_graph tipo,Mat *&matriz);
 int obtenerMayor(vector<float>Tiempos);
-float BigO(vector<float>tiempos, Tipo_graph tipo);
+Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo,Mat *&matriz);
 punto_pendiente obtenerMayorfloat(vector<float>Tiempos);
 float logbn(float b, float n);
+vector<float> get_vector(Tipo_eqn func);
+vector<float> transY(vector<float> vect);
+vector<float> transX(vector<float>vect);
 
 
 //===================================================================
@@ -64,10 +73,11 @@ float logbn(float b, float n);
 void func_prin(){
     Tipo_graph *comp1=NULL;
     Tipo_graph ret;
-    
+    Mat graph(1500,450,CV_64FC4,Scalar(255, 255, 255));
+    Mat *matriz=&graph;
     int tam=400;
     vector<float>tiempos=Capt_tiempos(tam);
-    render_graphic(tiempos);
+    render_graphic(tiempos,matriz);
     
     comp1=(Tipo_graph*)malloc(4*sizeof(Tipo_graph));
     
@@ -99,7 +109,7 @@ void func_prin(){
     free(comp1);
     system("pause");
     system("cls");
-    notacion(tiempos,ret);
+    notacion(tiempos,ret,matriz);
 
 }
 
@@ -107,6 +117,7 @@ void func_prin(){
 vector<float>Capt_tiempos(int ns){
     int constante=500;
     vector<float>Tiempos;
+    Tiempos.reserve(400);
     clock_t estampa;
     int arr[500];
      int *array=(int*)calloc(constante,sizeof(int));
@@ -132,7 +143,7 @@ vector<float>Capt_tiempos(int ns){
                 array=merges(500,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
-                Tiempos.push_back(float(estampa));
+                Tiempos[i]=(float)estampa;
                 
             }
             for (int i = 0; i < 10; i++)
@@ -150,7 +161,7 @@ vector<float>Capt_tiempos(int ns){
                 quick(500,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
-                Tiempos.push_back(float(estampa));
+                Tiempos[i]=(float)estampa;
                 
             }
                 for (int i = 0; i < 10; i++)
@@ -169,7 +180,7 @@ vector<float>Capt_tiempos(int ns){
                 burbuja(500,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
-                Tiempos.push_back(float(estampa));
+                Tiempos[i]=(float)estampa;
                 
             }
             for (int i = 0; i < 10; i++)
@@ -350,12 +361,10 @@ vector<float>graph_const(int tam){
 }
 
 
-int render_graphic(vector<float>value){
+int render_graphic(vector<float>value, Mat *&matriz){
         typedef Point_<float> pointfloat;
-        int num=obtenerMayor(value);
-        Mat fondo(num*20, (int)value.size(), CV_64FC4,
-              Scalar(255, 255, 255));
-        if (!fondo.data)
+        
+        if (!matriz->data)
         {
             cout<<"couldn't create image"<<endl;
             return 0;
@@ -365,14 +374,14 @@ int render_graphic(vector<float>value){
             Point ini(i-1,(int)value[i-1]*20);
             Point fin(i,(int)value[i]*20);
             Scalar color(255,0,0);
-            line (fondo,ini,fin,color,1);
+            line (*matriz,ini,fin,color,1);
         }
         
         
         
         namedWindow("Grafica",WINDOW_AUTOSIZE);
         moveWindow("Grafica",300,140);
-        imshow("Grafica",fondo);
+        imshow("Grafica",*matriz);
         waitKey(0); 
         cout<<"Grafico generado "<<endl;
         return 0;
@@ -394,9 +403,10 @@ void analisis(int ns){
 }
 
 
-void notacion(vector<float> vect, Tipo_graph tipo){
-    int opt;
-    
+void notacion(vector<float> vect, Tipo_graph tipo,Mat *&matriz){
+    int opt=0;
+    Tipo_eqn tip;
+    vector<float>val,vecx,vecy;
     do
     {
     cout<<"Selecciona que notación quieres"<<endl<<"1.-Big O"<<endl<<"2.-Little O"<<endl;
@@ -405,7 +415,8 @@ void notacion(vector<float> vect, Tipo_graph tipo){
     switch (opt)
     {
     case 1:
-        BigO(vect, tipo);
+        tip=BigO(vect, tipo,matriz);
+        val=get_vector(tip);
         break;
     case 2:
         
@@ -462,8 +473,9 @@ punto_pendiente obtenerMayorfloat(vector<float>Vect){
 
 
 
-float BigO(vector<float>tiempos, Tipo_graph tipo){
-    float  abj, arr,result;
+Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo,Mat *&matriz){
+    float  abj, arr;
+    Tipo_eqn result;
     punto_pendiente pendiente;
     vector<float> m;
     for (int i = 1; i < tiempos.size(); i++)
@@ -477,12 +489,23 @@ float BigO(vector<float>tiempos, Tipo_graph tipo){
         cout<<"La pendiente obtenida es: "<<pendiente.pendiente;
         if (tipo.id=="Parabolica")
         {
-            result=logbn(pendiente.punto,tiempos[pendiente.punto]);
-            cout<<"La ecuacion de tu funcion es: O(X^"<<result<<") "<<endl;
+            float e;
+            e=logbn(pendiente.punto,tiempos[pendiente.punto]);
+            cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
+            result.Exp=&e;
             return result;
             
+        }else if(tipo.id=="Lineal"){
+
+            float e;
+            e=pendiente.pendiente;
+            result.Line=&e;
+            return result;
+
+        }else if(tipo.id=="Logaritmica"){
+            float e;
+
         }
-        
 
     
 }
@@ -490,4 +513,58 @@ float BigO(vector<float>tiempos, Tipo_graph tipo){
 
 float logbn(float b, float n){
     return log(n)/log(b);
+}
+
+
+vector<float> get_vector(Tipo_eqn func){
+        vector<float>fin;
+        fin.reserve(400);
+        if (func.Exp)
+        {
+            for (int i = 0; i < 400; i++)
+            {
+                fin[i]=pow(i,(*func.Exp));
+            }
+            
+        }else if(func.Line){
+            for (int i = 0; i < 400; i++)
+            {
+                fin[i]=(*func.Line)*i;
+            }
+            
+        }else if(func.Logbn){
+            for (int i = 1; i < 401; i++)
+            {
+                fin[i]=logbn((*func.Logbn),i);
+            }
+            
+        }
+        return fin;
+        
+}
+
+
+vector<float> transY(vector<float> vect){//Se transforman las coordenadas de los pixeles
+    int cons=1450;
+    vector<float> fin;
+    fin.reserve(400);
+    for (int i = 0; i < 400; i++)
+    {
+        fin[i]=1450-vect[i];
+    }
+    
+    return fin;
+}
+
+
+vector<float>transX(vector<float>vect){
+        int cons=50;
+        vector<float> fin;
+        fin.reserve(400);
+        for (int i = 0; i < 400; i++)
+        {
+            fin[i]=vect[i]+50;
+        }
+        
+        return fin;
 }
