@@ -1,6 +1,6 @@
 /* ▪* Montero Barraza Alvaro David*
  3BV1▪* Ingenieria en IA ▪* ▪*/
-#define CVPLOT_HEADER_ONLY
+//#define CVPLOT_HEADER_ONLY
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
@@ -21,32 +21,32 @@ using namespace cv;
 //===================================================================
 
 typedef struct{
-        float correlation;
-        //string id;
+        long double correlation;
         char id[11];
+        int band;
 
 }Tipo_graph;
 
 typedef struct{
-    float pendiente;
+    long double pendiente;
     int punto;
 }punto_pendiente;
 
 typedef struct{
-        float *Exp=NULL;
-        float *Line=NULL;
-        float *Logbn=NULL;
+        long double *Exp;
+        long double *Line;
+        long double *Logbn;
 }Tipo_eqn;
 
 
 //===================================================================
 //===========================PROTOTIPOS DE FUNCIONES=================
 //===================================================================
-vector<float>Capt_tiempos(int ns);
-float C_correlacion(vector<float>X,vector<float>Y);
-float P_punto(vector<float>X,vector<float>Y);
+vector<long double>Capt_tiempos(int ns);
+float C_correlacion(vector<long double>X,vector<long double>Y);
+long double P_punto(vector<long double>X,vector<long double>Y);
 vector<float>vect_1(int size);
-int render_graphic(vector<float>value);
+int render_graphic(vector<long double>value);
 void func_prin();
 Tipo_graph tipo(Tipo_graph* a);
 vector<float>graph_const(int tam);
@@ -55,16 +55,17 @@ vector<float>graph_lineal(int tam);
 vector<float>graph_log(int tam);
 Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
-void notacion(vector<float> vect,Tipo_graph tipo);
-int obtenerMayor(vector<float>Tiempos);
-Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo);
-Tipo_eqn LittleO(vector<float>tiempos,Tipo_graph tipo);
-punto_pendiente obtenerMayorfloat(vector<float>Tiempos);
-float logbn(float b, float n);
-vector<float> get_vector(Tipo_eqn func);
-vector<float> transY(vector<float> vect);
-vector<float> transX(vector<float>vect);
-void Draw_graph(vector<float>Tn, vector<float>Gn);
+void notacion(vector<long double> vect,Tipo_graph tipo);
+int obtenerMayor(vector<long double>Tiempos);
+Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo);
+Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo);
+Tipo_eqn BigW(vector<long double>tiempos,Tipo_graph tipo);
+punto_pendiente obtenerMayorfloat(vector<long double>Tiempos);
+float logbn(double b, double n);
+vector<long double> get_vector(Tipo_eqn func);
+vector<long double> transY(vector<float> vect);
+vector<long double> transX(vector<float>vect);
+void Draw_graph(vector<long double>Tn, vector<long double>Gn);
 
 
 //===================================================================
@@ -75,8 +76,17 @@ void Draw_graph(vector<float>Tn, vector<float>Gn);
 void func_prin(){
     Tipo_graph *comp1=NULL;
     Tipo_graph ret;
-    vector<float>tiempos=Capt_tiempos(400);
-    cout<<"Parece que aqui es";
+    
+    vector<long double>tiempos=Capt_tiempos(400);
+    for (int i = 0; i < 400; i++)
+    {
+        cout<<tiempos[i]<<',';
+        if(i%10==0){
+            cout<<endl;
+        }
+    }
+    
+    system("pause");
     render_graphic(tiempos);
     
     comp1=(Tipo_graph*)malloc(4*sizeof(Tipo_graph));
@@ -90,14 +100,18 @@ void func_prin(){
     vector<float>parabola=graph_parabolica(400);
     vector<float>lineal=graph_lineal(400);
     vector<float>logaritmica=graph_log(400);
-    comp1[0].correlation=(float)C_correlacion(tiempos,constante);cout<<comp1[0].correlation;system("pause");//comp1[0].id="Constante";
+    comp1[0].correlation=(long double)C_correlacion(tiempos,constante);cout<<comp1[0].correlation;system("pause");//comp1[0].id="Constante";
     strcpy(comp1[0].id,"Constante");
-    comp1[1].correlation=(float)C_correlacion(tiempos,parabola);//comp1[1].id._Copy_s();
+    comp1[0].band=0;
+    comp1[1].correlation=(long double)C_correlacion(tiempos,parabola);//comp1[1].id._Copy_s();
     strcpy(comp1[1].id,"Parabolica");
-    comp1[2].correlation=(float)C_correlacion(tiempos,lineal);//comp1[2].id="Lineal";
+    comp1[1].band=1;
+    comp1[2].correlation=(long double)C_correlacion(tiempos,lineal);//comp1[2].id="Lineal";
     strcpy(comp1[2].id,"Lineal");
-    comp1[3].correlation=(float)C_correlacion(tiempos,logaritmica);//comp1[3].id="Logaritmica";
+    comp1[2].band=2;
+    comp1[3].correlation=(long double)C_correlacion(tiempos,logaritmica);//comp1[3].id="Logaritmica";
     strcpy(comp1[3].id,"Logaritmica");
+    comp1[3].band=3;
     comp1=QuickSort(comp1,0,3);
     for (int i = 0; i < 4; i++)
     {
@@ -114,9 +128,9 @@ void func_prin(){
 }
 
 
-vector<float>Capt_tiempos(int ns){
+vector<long double>Capt_tiempos(int ns){
     int constante=400;
-    vector<float>Tiempos(400);
+    vector<long double>Tiempos(400);
     clock_t estampa;
     int arr[400];
      int *array=(int*)calloc(constante,sizeof(int));
@@ -480,11 +494,10 @@ Tipo_eqn LittleO(vector<float>tiempos,Tipo_graph tipo){//TODO hacerle bien
         float  abj, arr;
     Tipo_eqn result;
     punto_pendiente pendiente;
-    vector<float> m;
-    m.reserve((int)tiempos.size());
+    vector<float> m(tiempos.size());
     for (int i = 1; i < tiempos.size(); i++)
     {
-        arr=tiempos.back()-0;
+        arr=tiempos[i];
         abj=(int)(i-0);
         m[i]=(int)(arr/abj);
         }
@@ -531,28 +544,29 @@ Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo){
         pendiente=obtenerMayorfloat(m);
         cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]-50<<")"<<endl;
         cout<<"La pendiente obtenida es: "<<pendiente.pendiente<<endl;
-        if (tipo.id=="Parabolica")
+        if (tipo.band==1)
         {
             float e;
             e=logbn(pendiente.punto,tiempos[pendiente.punto]);
             cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
             result.Exp=&e;
-        }else if(tipo.id=="Lineal"){
+        }else if(tipo.band==2){
 
             float e;
             e=pendiente.pendiente;
             cout<<"La ecuacion de tu funcion es: O("<<e<<"X)"<<endl;
             result.Line=&e;
 
-        }else if(tipo.id=="Logaritmica"){
+        }else if(tipo.band==3){
             float e=pow(pendiente.punto,1/tiempos[pendiente.punto]);
             cout<<"La ecuacion de tu funcion es: O(Log("<<e<<")(X)";
             result.Logbn=&e;
             
-        }else{
-            cout<<"Su ecuacion es lineal";
+        }else if(tipo.band==0){
+            cout<<"Su ecuacion es constante"<<endl;
+            float e=0;
+            result.Exp=&e;
         }
-        cout<<"Aqui va bien";
         return result;
     
 }
@@ -595,7 +609,7 @@ vector<float> transY(vector<float> vect){//Se transforman las coordenadas de los
     vector<float> fin(vect.size());
     for (int i = 0; i < vect.size(); i++)
     {
-        fin[i]=600-vect[i]-50;
+        fin[i]=550-vect[i];
     }
     
     return fin;
@@ -640,3 +654,5 @@ void Draw_graph(vector<float>Tn, vector<float>Gn){
 
 
 }
+
+//const, parab, line, log
