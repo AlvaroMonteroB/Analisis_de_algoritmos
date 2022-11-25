@@ -46,7 +46,7 @@ vector<float>Capt_tiempos(int ns);
 float C_correlacion(vector<float>X,vector<float>Y);
 float P_punto(vector<float>X,vector<float>Y);
 vector<float>vect_1(int size);
-int render_graphic(vector<float>value,Mat *&matriz);
+int render_graphic(vector<float>value);
 void func_prin();
 Tipo_graph tipo(Tipo_graph* a);
 vector<float>graph_const(int tam);
@@ -55,14 +55,16 @@ vector<float>graph_lineal(int tam);
 vector<float>graph_log(int tam);
 Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
-void notacion(vector<float> vect,Tipo_graph tipo,Mat *&matriz);
+void notacion(vector<float> vect,Tipo_graph tipo);
 int obtenerMayor(vector<float>Tiempos);
-Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo,Mat *&matriz);
+Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo);
+Tipo_eqn LittleO(vector<float>tiempos,Tipo_graph tipo);
 punto_pendiente obtenerMayorfloat(vector<float>Tiempos);
 float logbn(float b, float n);
 vector<float> get_vector(Tipo_eqn func);
 vector<float> transY(vector<float> vect);
 vector<float> transX(vector<float>vect);
+void Draw_graph(vector<float>Tn, vector<float>Gn);
 
 
 //===================================================================
@@ -73,11 +75,9 @@ vector<float> transX(vector<float>vect);
 void func_prin(){
     Tipo_graph *comp1=NULL;
     Tipo_graph ret;
-    Mat graph(1500,450,CV_64FC4,Scalar(255, 255, 255));
-    Mat *matriz=&graph;
-    int tam=400;
-    vector<float>tiempos=Capt_tiempos(tam);
-    render_graphic(tiempos,matriz);
+    vector<float>tiempos=Capt_tiempos(400);
+    cout<<"Parece que aqui es";
+    render_graphic(tiempos);
     
     comp1=(Tipo_graph*)malloc(4*sizeof(Tipo_graph));
     
@@ -86,10 +86,10 @@ void func_prin(){
         exit(5);  
     }
     
-    vector<float>constante=graph_const(tam);
-    vector<float>parabola=graph_parabolica(tam);
-    vector<float>lineal=graph_lineal(tam);
-    vector<float>logaritmica=graph_log(tam);
+    vector<float>constante=graph_const(400);
+    vector<float>parabola=graph_parabolica(400);
+    vector<float>lineal=graph_lineal(400);
+    vector<float>logaritmica=graph_log(400);
     comp1[0].correlation=(float)C_correlacion(tiempos,constante);cout<<comp1[0].correlation;system("pause");//comp1[0].id="Constante";
     strcpy(comp1[0].id,"Constante");
     comp1[1].correlation=(float)C_correlacion(tiempos,parabola);//comp1[1].id._Copy_s();
@@ -109,17 +109,16 @@ void func_prin(){
     free(comp1);
     system("pause");
     system("cls");
-    notacion(tiempos,ret,matriz);
+    notacion(tiempos,ret);
 
 }
 
 
 vector<float>Capt_tiempos(int ns){
-    int constante=500;
-    vector<float>Tiempos;
-    Tiempos.reserve(400);
+    int constante=400;
+    vector<float>Tiempos(400);
     clock_t estampa;
-    int arr[500];
+    int arr[400];
      int *array=(int*)calloc(constante,sizeof(int));
     for (int i = 0; i < constante; i++)
     {
@@ -140,11 +139,11 @@ vector<float>Capt_tiempos(int ns){
                 array=arr;
                 estampa=clock();
                 //Bloque de codigo por analizar
-                array=merges(500,array);
+                array=merges(400,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
                 Tiempos[i]=(float)estampa;
-                
+                 
             }
             for (int i = 0; i < 10; i++)
                 {
@@ -158,7 +157,7 @@ vector<float>Capt_tiempos(int ns){
                 array=arr;
                 estampa=clock();
                 //Bloque de codigo por analizar
-                quick(500,array);
+                quick(400,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
                 Tiempos[i]=(float)estampa;
@@ -168,7 +167,6 @@ vector<float>Capt_tiempos(int ns){
                 {
                     cout<<array[i]<<", ";
                 }
-                
                 return Tiempos;
             break;
         case 3:
@@ -177,7 +175,7 @@ vector<float>Capt_tiempos(int ns){
                 array=arr;
                 estampa=clock();
                 //Bloque de codigo por analizar
-                burbuja(500,array);
+                burbuja(400,array);
                 //Termina bloque de codigo
                 estampa=clock()-estampa;
                 Tiempos[i]=(float)estampa;
@@ -238,10 +236,8 @@ float P_punto(vector<float>X,vector<float>Y){
         {
             for (int i = 0; i < size_x; i++)
             {
-                aux=X.back()*Y.back();
+                aux=X[i]*Y[i];
                 suma=suma+aux;
-                X.pop_back();
-                Y.pop_back();
             }
             return suma;
         }
@@ -251,10 +247,10 @@ float P_punto(vector<float>X,vector<float>Y){
 }
 
 vector<float>vect_1(int size){
-    vector<float>vect;
+    vector<float>vect(size);
     for (int i = 0; i < size; i++)
     {
-        vect.push_back(1);
+        vect[i]=1;
     }
     return vect;
 }
@@ -319,20 +315,20 @@ Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final) {
 
         
 vector<float>graph_parabolica(int tam){
-    vector<float>valores;
+    vector<float>valores(tam);
     for (int i = 0; i < tam; i++)
     {
-        valores.push_back(pow(i,2));
+        valores[i]=(pow(i,2));
     }
     return valores;
     
 }
    
 vector<float>graph_lineal(int tam){
-    vector<float>valores;
+    vector<float>valores(tam);
     for (int i = 0; i < tam; i++)
     {
-        valores.push_back(i);
+        valores[i]=(i);
     }
     return valores;
 }
@@ -340,10 +336,10 @@ vector<float>graph_lineal(int tam){
 
 vector<float>graph_log(int tam){
     int i=1;
-    vector<float>valores;
+    vector<float>valores(tam);
     while (i<tam+1)
     {
-        valores.push_back(log10(i));
+        valores[i-1]=(log10(i));
         i++;
     }
     
@@ -353,35 +349,39 @@ vector<float>graph_log(int tam){
 
 vector<float>graph_const(int tam){
     vector<float>valores;
+    valores.resize(tam);
     for (int  i = 0; i < tam; i++)
     {
-        valores.push_back(1);
+        valores[i]=(1);
     }
     return valores;
 }
 
 
-int render_graphic(vector<float>value, Mat *&matriz){
+int render_graphic(vector<float>value){
         typedef Point_<float> pointfloat;
-        
-        if (!matriz->data)
+        value=transY(value);
+        Mat matriz(600,450,CV_64FC4,Scalar(255, 255, 255));
+        if (!matriz.data)
         {
             cout<<"couldn't create image"<<endl;
             return 0;
         }
+            value=transY(value);
         for (int i = 1; i < value.size(); i++)
+            
         {
-            Point ini(i-1,(int)value[i-1]*20);
-            Point fin(i,(int)value[i]*20);
+            Point ini((i-1)+50,(int)value[i-1]*20);
+            Point fin(i+50,(int)value[i]*20);
             Scalar color(255,0,0);
-            line (*matriz,ini,fin,color,1);
+            line (matriz,ini,fin,color,1);
         }
         
         
         
         namedWindow("Grafica",WINDOW_AUTOSIZE);
         moveWindow("Grafica",300,140);
-        imshow("Grafica",*matriz);
+        imshow("Grafica",matriz);
         waitKey(0); 
         cout<<"Grafico generado "<<endl;
         return 0;
@@ -403,10 +403,10 @@ void analisis(int ns){
 }
 
 
-void notacion(vector<float> vect, Tipo_graph tipo,Mat *&matriz){
+void notacion(vector<float> vect, Tipo_graph tipo){
     int opt=0;
     Tipo_eqn tip;
-    vector<float>val,vecx,vecy;
+    vector<float>val;
     do
     {
     cout<<"Selecciona que notación quieres"<<endl<<"1.-Big O"<<endl<<"2.-Little O"<<endl;
@@ -415,11 +415,12 @@ void notacion(vector<float> vect, Tipo_graph tipo,Mat *&matriz){
     switch (opt)
     {
     case 1:
-        tip=BigO(vect, tipo,matriz);
+        tip=BigO(vect, tipo);
         val=get_vector(tip);
         break;
     case 2:
-        
+        tip=LittleO(vect,tipo);
+        val=get_vector(tip);
         break;
     case 3:
         
@@ -439,6 +440,9 @@ void notacion(vector<float> vect, Tipo_graph tipo,Mat *&matriz){
     cout<<"Introduce una opcion valida"<<endl;
         break;
     }
+     vector<float>Gn=get_vector(tip);
+     Draw_graph(vect,Gn);
+
     } while (opt<7);
     
 }
@@ -472,17 +476,17 @@ punto_pendiente obtenerMayorfloat(vector<float>Vect){
 }
 
 
-
-Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo,Mat *&matriz){
-    float  abj, arr;
+Tipo_eqn LittleO(vector<float>tiempos,Tipo_graph tipo){//TODO hacerle bien
+        float  abj, arr;
     Tipo_eqn result;
     punto_pendiente pendiente;
     vector<float> m;
+    m.reserve((int)tiempos.size());
     for (int i = 1; i < tiempos.size(); i++)
     {
         arr=tiempos.back()-0;
-        abj=i-0;
-        m.push_back(arr/abj);
+        abj=(int)(i-0);
+        m[i]=(int)(arr/abj);
         }
         pendiente=obtenerMayorfloat(m);
         cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
@@ -503,9 +507,48 @@ Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo,Mat *&matriz){
             return result;
 
         }else if(tipo.id=="Logaritmica"){
-            float e;
             
+            
+        }   
+        return result;
+    
+}
+
+
+Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo){
+    float  abj, arr;
+    Tipo_eqn result;
+    punto_pendiente pendiente;
+    vector<float> m(tiempos.size());
+    for (int i = 1; i < tiempos.size(); i++)
+    {
+        arr=tiempos.back()-0;
+        abj=(int)(i-0);
+        m[i]=(int)(arr/abj);
         }
+        pendiente=obtenerMayorfloat(m);
+        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
+        cout<<"La pendiente obtenida es: "<<pendiente.pendiente;
+        if (tipo.id=="Parabolica")
+        {
+            float e;
+            e=logbn(pendiente.punto,tiempos[pendiente.punto]);
+            cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
+            result.Exp=&e;
+            return result;
+            
+        }else if(tipo.id=="Lineal"){
+
+            float e;
+            e=pendiente.pendiente;
+            result.Line=&e;
+            return result;
+
+        }else if(tipo.id=="Logaritmica"){//falta como dibujar el logaritmo
+            float e=pow(pendiente.punto,tiempos[pendiente.punto]);
+            result.Logbn=&e;
+            
+        }   
         return result;
     
 }
@@ -545,12 +588,11 @@ vector<float> get_vector(Tipo_eqn func){
 
 
 vector<float> transY(vector<float> vect){//Se transforman las coordenadas de los pixeles
-    int cons=1450;
-    vector<float> fin;
-    fin.reserve(400);
-    for (int i = 0; i < 400; i++)
+    int cons=600;
+    vector<float> fin(vect.size());
+    for (int i = 0; i < vect.size(); i++)
     {
-        fin[i]=1450-vect[i];
+        fin[i]=600-vect[i]-50;
     }
     
     return fin;
@@ -567,4 +609,15 @@ vector<float>transX(vector<float>vect){
         }
         
         return fin;
+}
+
+
+void Draw_graph(vector<float>Tn, vector<float>Gn){
+    Mat image(1500,450,CV_64FC4,Scalar(255, 255, 255));
+    if(!image.data){
+        cout<<"Couldnt create image";
+        return;
+    }
+
+
 }
