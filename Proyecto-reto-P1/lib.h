@@ -490,7 +490,7 @@ Tipo_eqn LittleO(vector<float>tiempos,Tipo_graph tipo){//TODO hacerle bien
         }
         pendiente=obtenerMayorfloat(m);
         cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
-        cout<<"La pendiente obtenida es: "<<pendiente.pendiente;
+        cout<<"La pendiente obtenida es: "<<pendiente.pendiente<<endl;
         if (tipo.id=="Parabolica")
         {
             float e;
@@ -503,7 +503,9 @@ Tipo_eqn LittleO(vector<float>tiempos,Tipo_graph tipo){//TODO hacerle bien
 
             float e;
             e=pendiente.pendiente;
+
             result.Line=&e;
+            cout<<"La ecuacion de tu funcion es: O("<<e<<"X)"<<endl;
             return result;
 
         }else if(tipo.id=="Logaritmica"){
@@ -523,32 +525,34 @@ Tipo_eqn BigO(vector<float>tiempos, Tipo_graph tipo){
     for (int i = 1; i < tiempos.size(); i++)
     {
         arr=tiempos.back()-0;
-        abj=(int)(i-0);
-        m[i]=(int)(arr/abj);
+        abj=(float)(i-0);
+        m[i]=(float)(arr/abj);
         }
         pendiente=obtenerMayorfloat(m);
-        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
-        cout<<"La pendiente obtenida es: "<<pendiente.pendiente;
+        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]-50<<")"<<endl;
+        cout<<"La pendiente obtenida es: "<<pendiente.pendiente<<endl;
         if (tipo.id=="Parabolica")
         {
             float e;
             e=logbn(pendiente.punto,tiempos[pendiente.punto]);
             cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
             result.Exp=&e;
-            return result;
-            
         }else if(tipo.id=="Lineal"){
 
             float e;
             e=pendiente.pendiente;
+            cout<<"La ecuacion de tu funcion es: O("<<e<<"X)"<<endl;
             result.Line=&e;
-            return result;
 
-        }else if(tipo.id=="Logaritmica"){//falta como dibujar el logaritmo
-            float e=pow(pendiente.punto,tiempos[pendiente.punto]);
+        }else if(tipo.id=="Logaritmica"){
+            float e=pow(pendiente.punto,1/tiempos[pendiente.punto]);
+            cout<<"La ecuacion de tu funcion es: O(Log("<<e<<")(X)";
             result.Logbn=&e;
             
-        }   
+        }else{
+            cout<<"Su ecuacion es lineal";
+        }
+        cout<<"Aqui va bien";
         return result;
     
 }
@@ -560,8 +564,7 @@ float logbn(float b, float n){
 
 
 vector<float> get_vector(Tipo_eqn func){
-        vector<float>fin;
-        fin.reserve(400);
+        vector<float>fin(400);
         if (func.Exp)
         {
             for (int i = 0; i < 400; i++)
@@ -613,11 +616,27 @@ vector<float>transX(vector<float>vect){
 
 
 void Draw_graph(vector<float>Tn, vector<float>Gn){
-    Mat image(1500,450,CV_64FC4,Scalar(255, 255, 255));
+    Mat image(600,800,CV_64FC4,Scalar(255, 255, 255));
     if(!image.data){
         cout<<"Couldnt create image";
         return;
     }
+    for (int i = 1; i < Tn.size(); i++)
+            
+        {
+            Point ini((i-1)+50,(int)Tn[i-1]*20);
+            Point fin(i+50,(int)Tn[i]*20);
+            Scalar color(255,0,0);
+            line (image,ini,fin,color,1);
+        }
+    for (int i = 1; i < Tn.size(); i++)
+            
+        {
+            Point ini((i-1)+50,(int)Gn[i-1]*20);
+            Point fin(i+50,(int)Gn[i]*20);
+            Scalar color(0,0,255);
+            line (image,ini,fin,color,1);
+        }
 
 
 }
