@@ -17,7 +17,7 @@ using namespace std;
 using namespace cv;
 
 //===================================================================
-//=================================Estructura========================
+//==========================Estructuras==============================
 //===================================================================
 
 typedef struct{
@@ -61,6 +61,7 @@ Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo);
 Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo);
 Tipo_eqn BigW(vector<long double>tiempos,Tipo_graph tipo);
 punto_pendiente obtenerMayorfloat(vector<long double>Tiempos);
+punto_pendiente Obtenermenordoub(vector<long double> Tiempos);
 long double logbn(long double b, long double n);
 vector<long double> get_vector(Tipo_eqn func);
 vector<long double> transY(vector<long double> vect);
@@ -86,7 +87,6 @@ void func_prin(){
         }
     }
     
-    system("pause");
     render_graphic(tiempos);
     
     comp1=(Tipo_graph*)malloc(4*sizeof(Tipo_graph));
@@ -370,23 +370,25 @@ vector<long double>graph_const(int tam){
     }
     return valores;
 }
-
+//==========================================================================================================
+//==================================1ST RENDER FUNCTION=====================================================
+//==========================================================================================================
 
 int render_graphic(vector<long double>value){
         typedef Point_<long double> pointfloat;
-        value=transY(value);
+        vector<long double> vect;
+        vect=transY(value);
         Mat matriz(600,450,CV_64FC4,Scalar(255, 255, 255));
         if (!matriz.data)
         {
             cout<<"couldn't create image"<<endl;
             return 0;
         }
-            value=transY(value);
         for (int i = 1; i < value.size(); i++)
             
         {
-            Point ini((i-1)+50,(int)value[i-1]*20);
-            Point fin(i+50,(int)value[i]*20);
+            Point ini((i-1)+50,(int)vect[i-1]);
+            Point fin(i+50,(int)value[i]);
             Scalar color(255,0,0);
             line (matriz,ini,fin,color,1);
         }
@@ -471,6 +473,7 @@ int obtenerMayor(vector<long double>Tiempos){
                 Mayor=Tiempos[i];
         }
     }
+    system("pause");
     return Mayor;
 }
 
@@ -486,6 +489,7 @@ punto_pendiente obtenerMayorfloat(vector<long double>Vect){
                 Mayor.punto=i;
         }
     }
+    cout<<"Tiempo mayor"<<Mayor.pendiente<<','<<Mayor.punto<<endl;
     return Mayor;
 }
 
@@ -498,8 +502,8 @@ Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo){//TODO hacerle bien
     for (int i = 1; i < tiempos.size(); i++)
     {
         arr=tiempos[i];
-        abj=(int)(i-0);
-        m[i]=(int)(arr/abj);
+        abj=(long double)(i);
+        m[i]=(long double)(arr/abj);
         }
         pendiente=obtenerMayorfloat(m);
         cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
@@ -535,9 +539,9 @@ Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo){
     Tipo_eqn result;
     punto_pendiente pendiente;
     vector<long double> m(tiempos.size());
-    for (int i = 1; i < tiempos.size(); i++)
+    for (int i = 0; i < tiempos.size(); i++)
     {
-        arr=tiempos.back()-0;
+        arr=tiempos[i]-0;
         abj=(long double)(i-0);
         m[i]=(long double)(arr/abj);
         }
@@ -567,6 +571,7 @@ Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo){
             long double e=0;
             result.Exp=&e;
         }
+        system("pause");
         return result;
     
 }
@@ -606,10 +611,11 @@ vector<long double> get_vector(Tipo_eqn func){
 
 vector<long double> transY(vector<long double> vect){//Se transforman las coordenadas de los pixeles
     int cons=600;
+    long double Mayor=obtenerMayor(vect);
     vector<long double> fin(vect.size());
     for (int i = 0; i < vect.size(); i++)
     {
-        fin[i]=550-vect[i];
+        fin[i]=(550-vect[i])/Mayor;
     }
     
     return fin;
