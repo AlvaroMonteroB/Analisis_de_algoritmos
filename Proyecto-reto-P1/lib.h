@@ -33,9 +33,8 @@ typedef struct{
 }punto_pendiente;
 
 typedef struct{
-        long double *Exp;
-        long double *Line;
-        long double *Logbn;
+        int band;
+        long double func;
 }Tipo_eqn;
 
 
@@ -64,7 +63,6 @@ punto_pendiente obtenerMayorfloat(const vector<long double>Tiempos);
 punto_pendiente Obtenermenordoub(const vector<long double> Tiempos);
 long double logbn(long double b, long double n);
 vector<long double> get_vector(Tipo_eqn func);
-vector<long double> transY(const vector<long double> vect);
 vector<long double> transX(vector<long double>vect);
 void Draw_graph(vector<long double>Tn, vector<long double>Gn);
 
@@ -372,8 +370,6 @@ vector<long double>graph_const(int tam){
 
 int render_graphic(const vector<long double>value){
         typedef Point_<long double> pointfloat;
-        vector<long double> vect;
-        vect=transY(value);
         Mat matriz(600,450,CV_64FC4,Scalar(255, 255, 255));
         if (!matriz.data)
         {
@@ -383,7 +379,7 @@ int render_graphic(const vector<long double>value){
         for (int i = 1; i < value.size(); i++)
             
         {
-            Point ini((i-1)+50,(int)vect[i-1]);
+            Point ini((i-1)+50,(int)value[i-1]);
             Point fin(i+50,(int)value[i]);
             Scalar color(255,0,0);
             line (matriz,ini,fin,color,1);
@@ -417,15 +413,10 @@ void analisis(int ns){
 
 void notacion(const vector<long double> vect, Tipo_graph tipo){
     int opt=0;
-    Tipo_eqn tip;
+    Tipo_eqn tip={};
     vector<long double>val;
     do
     {
-        for (int i = 0; i < vect.size(); i++)
-                {
-                    cout<<vect[i]<<", ";
-                    if(i%10==0){cout<<endl;}
-                }
     cout<<"Selecciona que notación quieres"<<endl<<"1.-Big O"<<endl<<"2.-Little O"<<endl;
     cout<<"3.-Big Omega"<<endl<<"4.-Little Omega"<<endl<<"5.-Big Theta"<<endl<<"6.-Little Theta"<<endl<<"7.-Salir del programa"<<endl;
     cin>>opt;
@@ -475,21 +466,20 @@ int obtenerMayor(const vector<long double>Tiempos){
         }
     }
     system("pause");
-    return Mayor;
+    return Mayor;   
 }
 
 
 punto_pendiente obtenerMayorfloat(const vector<long double>Vect){//vector de pendientes
     punto_pendiente Mayor;
-    for (int i=0; i<Vect.size(); i++) {
-        if(i==0){
-            Mayor.pendiente=Vect[i];
-            Mayor.punto=0;
-        }else{
-            if(Vect[i]>Mayor.pendiente)
+    Mayor.pendiente=Vect[0];
+    Mayor.punto=0;
+    for (int i=1; i<Vect.size(); i++) {
+            if(Vect[i]>Mayor.pendiente){
+                cout<<i<<' ';
                 Mayor.pendiente=Vect[i];
                 Mayor.punto=i;
-        }
+            }
     }
     cout<<"Tiempo mayor"<<Mayor.punto<<','<<Mayor.pendiente<<endl;
     return Mayor;
@@ -498,17 +488,16 @@ punto_pendiente obtenerMayorfloat(const vector<long double>Vect){//vector de pen
 
 Tipo_eqn LittleO(const vector<long double>tiempos,Tipo_graph tipo){//TODO hacerle bien
         long double  abj, arr;
-    Tipo_eqn result;
+    Tipo_eqn result={};
     punto_pendiente pendiente;
     vector<long double> m(tiempos.size());
     for (int i = 1; i < tiempos.size(); i++)
     {
-        arr=tiempos[i];
         abj=(long double)(i);if(abj==0)
         if(abj==0){
             m[i]=0;
         }else{
-            m[i]=(long double)(arr/abj);
+            m[i]=(long double)(tiempos[i]/abj);
         }
         
         }
@@ -520,7 +509,7 @@ Tipo_eqn LittleO(const vector<long double>tiempos,Tipo_graph tipo){//TODO hacerl
             long double e;
             e=logbn(pendiente.punto,tiempos[pendiente.punto]);
             cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
-            result.Exp=&e;
+            result.func=e;
             return result;
             
         }else if(tipo.id=="Lineal"){
@@ -528,7 +517,8 @@ Tipo_eqn LittleO(const vector<long double>tiempos,Tipo_graph tipo){//TODO hacerl
             long double e;
             e=pendiente.pendiente;
 
-            result.Line=&e;
+            result.func=e;
+            result.band=0;
             cout<<"La ecuacion de tu funcion es: O("<<e<<"X)"<<endl;
             return result;
 
@@ -541,24 +531,23 @@ Tipo_eqn LittleO(const vector<long double>tiempos,Tipo_graph tipo){//TODO hacerl
 }
 
 
-Tipo_eqn BigO(const vector<long double>tiempos, Tipo_graph tipo){
-    long double  abj, arr;
-    Tipo_eqn result;
+Tipo_eqn BigO(const vector<long double>tiempos, Tipo_graph tipo){//0 const// 1 parabola//2 lineal//3 logaritmica
+    long double  abj;
+    Tipo_eqn result={};
     punto_pendiente pendiente;
     vector<long double> m(tiempos.size());
     for (int i = 0; i < tiempos.size(); i++)
     {
-        arr=tiempos[i]-0;
-        abj=(long double)(i-0);
+        abj=(long double)(i);
         if(abj==0){
             m[i]=0;
         }else{
-            m[i]=(long double)(arr/abj);
+            m[i]=tan((long double)(tiempos[i]/abj));
         }
         
         }
         pendiente=obtenerMayorfloat(m);
-        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]-50<<")"<<endl;
+        cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
         cout<<"La pendiente obtenida es: "<<pendiente.pendiente<<endl;
         if (tipo.band==1)
         {
@@ -566,27 +555,31 @@ Tipo_eqn BigO(const vector<long double>tiempos, Tipo_graph tipo){
             e=logbn(pendiente.punto,tiempos[pendiente.punto]);
             if(e==0){
                 cout<<"La ecuacion de tu funcion es O(1)"<<endl;
+                result.band=0;
             }else{
             cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
-           
-            } result.Exp=&e;
+                result.band=1;
+            } result.func=e;
             
         }else if(tipo.band==2){
 
             long double e;
             e=pendiente.pendiente;
             cout<<"La ecuacion de tu funcion es: O("<<e<<"X)"<<endl;
-            result.Line=&e;
+            result.band=2;
+            result.func=e;
 
         }else if(tipo.band==3){
             long double e=pow(pendiente.punto,1/tiempos[pendiente.punto]);
             cout<<"La ecuacion de tu funcion es: O(Log("<<e<<")(X)";
-            result.Logbn=&e;
+            result.band=3;
+            result.func=e;
             
         }else if(tipo.band==0){
             cout<<"Su ecuacion es constante"<<endl;
+            result.band=0;
             long double e=0;
-            result.Exp=&e;
+            result.func=e;
         }
         system("pause");
         return result;
@@ -607,44 +600,35 @@ long double logbn(long double b, long double n){
 }
 
 
-vector<long double> get_vector(Tipo_eqn func){
+vector<long double> get_vector(Tipo_eqn func){//0 const// 1 parabola//2 lineal//3 logaritmica
         vector<long double>fin(400);
-        if (func.Exp)
+        if (func.band==1)
         {
             for (int i = 0; i < 400; i++)
             {
-                fin[i]=pow(i,(*func.Exp));
+                fin[i]=pow(i,(func.func));
             }
             
-        }else if(func.Line){
+        }else if(func.band==2){
             for (int i = 0; i < 400; i++)
             {
-                fin[i]=(*func.Line)*i;
+                fin[i]=(func.func)*i;
             }
             
-        }else if(func.Logbn){
+        }else if(func.band==3){
             for (int i = 1; i < 401; i++)
             {
-                fin[i]=logbn((*func.Logbn),i);
+                fin[i-1]=logbn((func.func),i);
             }
             
+        }else if(func.band==0){
+            fin=vect_1(fin.size());
         }
         return fin;
         
 }
 
 
-vector<long double> transY(const vector<long double> vect){//Se transforman las coordenadas de los pixeles
-    int cons=600;
-    long double Mayor=obtenerMayor(vect);
-    vector<long double> fin(vect.size());
-    for (int i = 0; i < vect.size(); i++)
-    {
-        fin[i]=(550-vect[i]*20)/Mayor;
-    }
-    
-    return fin;
-}
 
 
 vector<long double>transX(vector<long double>vect){
