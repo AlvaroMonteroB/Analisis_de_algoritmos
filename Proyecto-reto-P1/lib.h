@@ -46,7 +46,7 @@ vector<long double>Capt_tiempos(int ns);
 long double C_correlacion(vector<long double>X,vector<long double>Y);
 long double P_punto(vector<long double>X,vector<long double>Y);
 vector<long double>vect_1(int size);
-int render_graphic(vector<long double>value);
+int render_graphic(const vector<long double>value);
 void func_prin();
 Tipo_graph tipo(Tipo_graph* a);
 vector<long double>graph_const(int tam);
@@ -55,13 +55,13 @@ vector<long double>graph_lineal(int tam);
 vector<long double>graph_log(int tam);
 Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
-void notacion(vector<long double> vect,Tipo_graph tipo);
+void notacion(const vector<long double> vect,Tipo_graph tipo);
 int obtenerMayor(vector<long double>Tiempos);
 Tipo_eqn BigO(const vector<long double>tiempos, Tipo_graph tipo);
-Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo);
-Tipo_eqn BigW(vector<long double>tiempos,Tipo_graph tipo);
+Tipo_eqn LittleO(const vector<long double>tiempos,Tipo_graph tipo);
+Tipo_eqn BigW(const vector<long double>tiempos,Tipo_graph tipo);
 punto_pendiente obtenerMayorfloat(const vector<long double>Tiempos);
-punto_pendiente Obtenermenordoub(vector<long double> Tiempos);
+punto_pendiente Obtenermenordoub(const vector<long double> Tiempos);
 long double logbn(long double b, long double n);
 vector<long double> get_vector(Tipo_eqn func);
 vector<long double> transY(const vector<long double> vect);
@@ -370,7 +370,7 @@ vector<long double>graph_const(int tam){
 //==================================1ST RENDER FUNCTION=====================================================
 //==========================================================================================================
 
-int render_graphic(vector<long double>value){
+int render_graphic(const vector<long double>value){
         typedef Point_<long double> pointfloat;
         vector<long double> vect;
         vect=transY(value);
@@ -415,7 +415,7 @@ void analisis(int ns){
 }
 
 
-void notacion(vector<long double> vect, Tipo_graph tipo){
+void notacion(const vector<long double> vect, Tipo_graph tipo){
     int opt=0;
     Tipo_eqn tip;
     vector<long double>val;
@@ -464,7 +464,7 @@ void notacion(vector<long double> vect, Tipo_graph tipo){
     
 }
 
-int obtenerMayor(vector<long double>Tiempos){
+int obtenerMayor(const vector<long double>Tiempos){
     int Mayor=0;
     for (int i=0; i<Tiempos.size(); i++) {
         if(i==0)
@@ -496,7 +496,7 @@ punto_pendiente obtenerMayorfloat(const vector<long double>Vect){//vector de pen
 }
 
 
-Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo){//TODO hacerle bien
+Tipo_eqn LittleO(const vector<long double>tiempos,Tipo_graph tipo){//TODO hacerle bien
         long double  abj, arr;
     Tipo_eqn result;
     punto_pendiente pendiente;
@@ -660,7 +660,7 @@ vector<long double>transX(vector<long double>vect){
 }
 
 
-void Draw_graph(vector<long double>Tn, vector<long double>Gn){
+void Draw_graph(const vector<long double>Tn, const vector<long double>Gn){
     Mat image(600,800,CV_64FC4,Scalar(255, 255, 255));
     if(!image.data){
         cout<<"Couldnt create image";
