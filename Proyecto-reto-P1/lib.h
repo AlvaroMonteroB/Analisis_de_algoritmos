@@ -78,7 +78,7 @@ void func_prin(){
     Tipo_graph *comp1=NULL;
     Tipo_graph ret;
     
-    vector<long double>tiempos=Capt_tiempos(400);
+    vector< long double>tiempos=Capt_tiempos(400);
     for (int i = 0; i < 400; i++)
     {
         cout<<tiempos[i]<<',';
@@ -218,8 +218,8 @@ long double C_correlacion(vector<long double>X,vector<long double>Y){
             cout<<"El vector no es del mismo tamaño"<<endl;
         }
         
-        vector<long double>vecx=vect_1(X.size());
-        vector<long double>vecy=vect_1(Y.size());
+        vector<long double>vecx=vect_1((int)X.size());
+        vector<long double>vecy=vect_1((int)Y.size());
         long double aux1,aux2;
         long double xpy=P_punto(X,Y);
         long double xx=P_punto(X,X);
@@ -462,7 +462,7 @@ void notacion(vector<long double> vect, Tipo_graph tipo){
     } while (opt<7);
     
 }
-
+/*
 int obtenerMayor(vector<long double>Tiempos){
     int Mayor=0;
     for (int i=0; i<Tiempos.size(); i++) {
@@ -475,10 +475,10 @@ int obtenerMayor(vector<long double>Tiempos){
     }
     system("pause");
     return Mayor;
-}
+}*/
 
 
-punto_pendiente obtenerMayorfloat(vector<long double>Vect){
+punto_pendiente obtenerMayorfloat(vector<long double>Vect){//vector de pendientes
     punto_pendiente Mayor;
     for (int i=0; i<Vect.size(); i++) {
         if(i==0)
@@ -489,7 +489,7 @@ punto_pendiente obtenerMayorfloat(vector<long double>Vect){
                 Mayor.punto=i;
         }
     }
-    cout<<"Tiempo mayor"<<Mayor.pendiente<<','<<Mayor.punto<<endl;
+    cout<<"Tiempo mayor"<<Mayor.punto<<','<<Mayor.pendiente<<endl;
     return Mayor;
 }
 
@@ -502,8 +502,13 @@ Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo){//TODO hacerle bien
     for (int i = 1; i < tiempos.size(); i++)
     {
         arr=tiempos[i];
-        abj=(long double)(i);
-        m[i]=(long double)(arr/abj);
+        abj=(long double)(i);if(abj==0)
+        if(abj==0){
+            m[i]=0;
+        }else{
+            m[i]=(long double)(arr/abj);
+        }
+        
         }
         pendiente=obtenerMayorfloat(m);
         cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]<<")"<<endl;
@@ -543,7 +548,12 @@ Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo){
     {
         arr=tiempos[i]-0;
         abj=(long double)(i-0);
-        m[i]=(long double)(arr/abj);
+        if(abj==0){
+            m[i]=0;
+        }else{
+            m[i]=(long double)(arr/abj);
+        }
+        
         }
         pendiente=obtenerMayorfloat(m);
         cout<<"El punto de mayor pendiente es : ("<<pendiente.punto<<", "<<tiempos[pendiente.punto]-50<<")"<<endl;
@@ -552,8 +562,13 @@ Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo){
         {
             long double e;
             e=logbn(pendiente.punto,tiempos[pendiente.punto]);
+            if(e==0){
+                cout<<"La ecuacion de tu funcion es O(1)"<<endl;
+            }else{
             cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
-            result.Exp=&e;
+           
+            } result.Exp=&e;
+            
         }else if(tipo.band==2){
 
             long double e;
@@ -615,7 +630,7 @@ vector<long double> transY(vector<long double> vect){//Se transforman las coorde
     vector<long double> fin(vect.size());
     for (int i = 0; i < vect.size(); i++)
     {
-        fin[i]=(550-vect[i])/Mayor;
+        fin[i]=(550-vect[i]*20)/Mayor;
     }
     
     return fin;
