@@ -57,14 +57,14 @@ Tipo_graph* QuickSort(Tipo_graph *array, int inicio, int final);
 void analisis(int ns);
 void notacion(vector<long double> vect,Tipo_graph tipo);
 int obtenerMayor(vector<long double>Tiempos);
-Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo);
+Tipo_eqn BigO(const vector<long double>tiempos, Tipo_graph tipo);
 Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo);
 Tipo_eqn BigW(vector<long double>tiempos,Tipo_graph tipo);
-punto_pendiente obtenerMayorfloat(vector<long double>Tiempos);
+punto_pendiente obtenerMayorfloat(const vector<long double>Tiempos);
 punto_pendiente Obtenermenordoub(vector<long double> Tiempos);
 long double logbn(long double b, long double n);
 vector<long double> get_vector(Tipo_eqn func);
-vector<long double> transY(vector<long double> vect);
+vector<long double> transY(const vector<long double> vect);
 vector<long double> transX(vector<long double>vect);
 void Draw_graph(vector<long double>Tn, vector<long double>Gn);
 
@@ -195,10 +195,6 @@ vector<long double>Capt_tiempos(int ns){
                 Tiempos[i]=(long double)estampa;
                 
             }
-            for (int i = 0; i < 10; i++)
-                {
-                    cout<<array[i]<<", ";
-                }
                  return Tiempos;
         
             break;
@@ -425,6 +421,11 @@ void notacion(vector<long double> vect, Tipo_graph tipo){
     vector<long double>val;
     do
     {
+        for (int i = 0; i < vect.size(); i++)
+                {
+                    cout<<vect[i]<<", ";
+                    if(i%10==0){cout<<endl;}
+                }
     cout<<"Selecciona que notación quieres"<<endl<<"1.-Big O"<<endl<<"2.-Little O"<<endl;
     cout<<"3.-Big Omega"<<endl<<"4.-Little Omega"<<endl<<"5.-Big Theta"<<endl<<"6.-Little Theta"<<endl<<"7.-Salir del programa"<<endl;
     cin>>opt;
@@ -462,7 +463,7 @@ void notacion(vector<long double> vect, Tipo_graph tipo){
     } while (opt<7);
     
 }
-/*
+
 int obtenerMayor(vector<long double>Tiempos){
     int Mayor=0;
     for (int i=0; i<Tiempos.size(); i++) {
@@ -475,15 +476,16 @@ int obtenerMayor(vector<long double>Tiempos){
     }
     system("pause");
     return Mayor;
-}*/
+}
 
 
-punto_pendiente obtenerMayorfloat(vector<long double>Vect){//vector de pendientes
+punto_pendiente obtenerMayorfloat(const vector<long double>Vect){//vector de pendientes
     punto_pendiente Mayor;
     for (int i=0; i<Vect.size(); i++) {
-        if(i==0)
+        if(i==0){
             Mayor.pendiente=Vect[i];
-        else{
+            Mayor.punto=0;
+        }else{
             if(Vect[i]>Mayor.pendiente)
                 Mayor.pendiente=Vect[i];
                 Mayor.punto=i;
@@ -539,7 +541,7 @@ Tipo_eqn LittleO(vector<long double>tiempos,Tipo_graph tipo){//TODO hacerle bien
 }
 
 
-Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo){
+Tipo_eqn BigO(const vector<long double>tiempos, Tipo_graph tipo){
     long double  abj, arr;
     Tipo_eqn result;
     punto_pendiente pendiente;
@@ -593,6 +595,14 @@ Tipo_eqn BigO(vector<long double>tiempos, Tipo_graph tipo){
 
 
 long double logbn(long double b, long double n){
+    if(log(b)==0){
+        return 0;
+    }
+    if(b<0){
+        return 0;
+    }else if(n<0){
+        return 0;
+    }
     return log(n)/log(b);
 }
 
@@ -624,7 +634,7 @@ vector<long double> get_vector(Tipo_eqn func){
 }
 
 
-vector<long double> transY(vector<long double> vect){//Se transforman las coordenadas de los pixeles
+vector<long double> transY(const vector<long double> vect){//Se transforman las coordenadas de los pixeles
     int cons=600;
     long double Mayor=obtenerMayor(vect);
     vector<long double> fin(vect.size());
