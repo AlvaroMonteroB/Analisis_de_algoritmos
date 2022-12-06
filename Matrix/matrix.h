@@ -5,44 +5,102 @@ using namespace std;
 
 class Matrix{
     public:
-    vector<float> _vals;
-    uint32_t    _cols;
-    uint32_t    _rows;
+        uint32_t _cols;
+        uint32_t _rows;
+        vector<float>_vals;
     public:
     Matrix(uint32_t cols, uint32_t rows)
-        :_cols(cols),
-        _rows(rows),
-        _vals({})
-        {
-        _vals.resize(_cols*_rows);
-        }
-
-    float  &at(uint32_t col,uint32_t row){
-        return _vals[row*_cols+col];
-    }
-
-
-    Matrix multiply(Matrix& target){
-        assert(_cols==target._rows);
-        Matrix output(target._cols,_rows);
-        for (int i = 0; i < output._rows; i++)
-        {
-            for (int j = 0; j < output._cols; j++)
+    :_cols(cols),
+     _rows(rows),
+     _vals({}){
+        _vals.resize(cols*rows,0.0f);  
+     }
+     void display();
+     float &at(uint32_t col, uint32_t row){
+        return _vals[row*_cols+row];
+     }
+     Matrix multiply(Matrix& Target){
+            assert(_cols==Target._rows);
+            Matrix output(Target._cols,_rows);
+            for (uint32_t i = 0; i < output._rows; i++)
             {
-                float result= 0.0f;
-                for (int k = 0; k < _cols; k++)
+                for (uint32_t j = 0; j < output._cols; j++)
                 {
-                    result+= at(k,i)*target.at(j,k);
+                    double result= 0.0f;
+                    for (uint32_t k = 0; k < _cols; k++)
+                        {
+                            result+=at(k,i) * Target.at(j,k);
+                           
+                        }
+                     output.at(j,i)=result;
                 }
-                output.at(j,i)=result;
+                
+                
+                
+            }
+            return output;
+            
+     }
+     Matrix add(Matrix &target){
+        assert(_rows==target._rows&&_cols==target._cols);
+        Matrix output(target._cols,_rows);
+        for (size_t i = 0; i < output._rows; i++)
+        {
+            for (size_t j = 0; j < output._cols; i++)
+            {
+                output.at(j,i)=at(j,i)+target.at(j,i);
             }
             
         }
         return output;
+     }
+     
 
-    }
-    void display();
+     Matrix multiplyScaler(float s){
+        Matrix output(_cols,_rows);
+        for(uint32_t i;i<_rows;i++){
+            for (uint32_t j = 0; j < _cols; j++)
+            {
+                output.at(j,i)=at(j,i)*s;
+            }
+        }
+        return output;
 
+     }
+     Matrix addScaler(float s){
+         Matrix output(_cols,_rows);
+        for(uint32_t i;i<_rows;i++){
+            for (uint32_t j = 0; j < _cols; j++)
+            {
+                output.at(j,i)=at(j,i)+s;
+            }
+        }
+        return output;
+     }
+
+     Matrix negative(){
+        Matrix output(_cols,_rows);
+        for(uint32_t i;i<_rows;i++){
+            for (uint32_t j = 0; j < _cols; j++)
+            {
+                output.at(j,i)=-at(j,i);
+            }
+        }
+        return output;
+     }
+
+     Matrix transpose(){
+        Matrix output(_rows,_cols);
+        for (uint32_t i = 0; i <_rows; i++)
+        {
+            for (uint32_t j = 0; i < _cols; i++)
+            {
+                output.at(i,j)=at(j,i);
+            
+            }
+        return output;
+            }
+     }
 };
 
 
@@ -62,15 +120,18 @@ class SMatrix{
     float  &at(uint32_t col,uint32_t row){
         return _vals[row*_cols+col];
     }
+    SMatrix brute_force(SMatrix &target);
 };
 
 //smultiplication of two matrix by strassen
 SMatrix SMatrix::multiply(SMatrix &target){
     assert(_cols==target._rows);
     SMatrix output(target._cols,_rows);
-    if(_cols==1){
-        output.at(0,0)=at(0,0)*target.at(0,0);
-        return output;}
+    if (_cols&&target._rows<4)
+    {
+        brute_force(target);
+    }
+    
 
 
 
@@ -79,13 +140,38 @@ SMatrix SMatrix::multiply(SMatrix &target){
 
 
     void Matrix::display(){
-        for (uint32_t i = 0; i < _cols; i++)
+        for (uint32_t i = 0; i < _rows; i++)
         {
-            for (uint32_t j = 0; j < _rows; j++)
+            for (uint32_t j = 0; j < _cols; j++)
             {
-                cout<<at(i,j)<<' ';
+                cout<<at(j,i)<<' ';
             }
             cout<<endl;
         }
         
     }
+
+
+    SMatrix SMatrix::brute_force(SMatrix &Target){
+            assert(_cols==Target._rows);
+            SMatrix output(Target._cols,_rows);
+            for (uint32_t i = 0; i < output._rows; i++)
+            {
+                for (uint32_t j = 0; j < output._cols; j++)
+                {
+                    double result= 0.0f;
+                    for (uint32_t k = 0; k < _cols; k++)
+                        {
+                            result+=at(k,i) * Target.at(j,k);
+                           
+                        }
+                     output.at(j,i)=result;
+                }
+                
+                
+                
+            }
+            return output;
+            
+     }
+    

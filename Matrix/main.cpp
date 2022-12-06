@@ -4,8 +4,32 @@
 #include<vector>
 using namespace std;
 
+void read_file();
+void input_data();
+
+
 //usar split para el archivo
 int main(){
+    int opt;
+    cout<<"1.-Leer de un archivo"<<endl<<"2.-Introducir matrices"<<endl;
+    cin>>opt;
+    switch (opt)
+    {
+    case 1:
+        read_file();
+        break;
+    case 2:
+        input_data();
+        break;
+    default:
+        break;
+    }
+
+
+
+}
+
+void read_file(){
     string mat1="mat1.txt";
     string mat2="mat2.txt";
     uint32_t *row, *col;
@@ -51,7 +75,46 @@ int main(){
 
     mat_1.multiply(mat_2);
 
+}
 
-//create a dinamic variable 
+void input_data(){
+    int tam[3]; 
+    cout<<"Introduce el tamaño de la matriz nxm"<<endl; 
+    for (int i = 0; i < 2; i++)
+    {
+        
+        cin>>tam[i];
+        
+    }
+    tam[2]=tam[0]*tam[1];
+        vector<float>vect1(tam[2]);
+        cout<<"Introduce las componentes"<<endl;
+        for (int j = 0; j < tam[2]; j++)
+        {
+            cin>>vect1[j];
+        }
+    Matrix mat1(tam[0],tam[1]);
+    mat1._vals=vect1;
+      cout<<"Introduce el tamaño de otra matriz nxm"<<endl; 
+    for (int i = 0; i < 2; i++)
+    {
+        
+        cin>>tam[i];
+        
+    }
+     tam[2]=tam[0]*tam[1];
+        vect1.resize(tam[2]);
+        cout<<"Introduce las componentes"<<endl;
+        for (int j = 0; j < tam[2]; j++)
+        {
+            cin>>vect1[j];
+        }
+        Matrix mat2(tam[0],tam[1]);
+        mat2._vals=vect1;
+
+        Matrix out=mat1.multiply(mat2);
+        out.display();
+
+    
 
 }
