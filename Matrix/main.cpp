@@ -33,7 +33,7 @@ void read_file(){
     string mat1="mat1.txt";
     string mat2="mat2.txt";
     uint32_t *row, *col;
-    vector<char*> str;
+    vector<char> str;
     vector<float> vect1;
 
     str=stream(str,col,row,mat1);
@@ -42,7 +42,6 @@ void read_file(){
         cout<<"si existe"<<endl;
         cout<<str.size()<<endl;
     }
-    
     for (int i = 0; i < str.size(); i++)
     {
         cout<<str[i]<<' ';
@@ -52,7 +51,7 @@ void read_file(){
         }
         
     }
-    cout<<"Debug1"<<endl;
+    //cout<<"Debug1"<<endl;
     vect1=mat(str);
     Matrix mat_1(col[0],row[0]);
     SMatrix smat_1(col[0],row[0]);
@@ -78,7 +77,7 @@ void read_file(){
 }
 
 void input_data(){
-    int tam[3]; 
+    int tam[3];/*
     cout<<"Introduce el tamaño de la matriz nxm"<<endl; 
     for (int i = 0; i < 2; i++)
     {
@@ -111,8 +110,15 @@ void input_data(){
         }
         Matrix mat2(tam[0],tam[1]);
         mat2._vals=vect1;
+*/
+        Matrix mat1(3,3);
+        Matrix mat2(3,3);
+        mat1._vals={1,3,5,1,6,2,6,3,7};
+        mat1.display();
+        mat2._vals={6,3,8,0,1,4,7,9,5};
 
         Matrix out=mat1.multiply(mat2);
+        
         out.display();
 
     

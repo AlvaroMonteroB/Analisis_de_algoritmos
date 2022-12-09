@@ -125,9 +125,9 @@ class SMatrix{
 
 //smultiplication of two matrix by strassen
 SMatrix SMatrix::multiply(SMatrix &target){
-    assert(_cols==target._rows);
+    assert((_cols==target._rows)&&(_rows==target._cols));
     SMatrix output(target._cols,_rows);
-    if (_cols&&target._rows<4)
+    if ((target._cols==_rows)&&(target._rows))
     {
         brute_force(target);
     }
@@ -140,12 +140,11 @@ SMatrix SMatrix::multiply(SMatrix &target){
 
 
     void Matrix::display(){
-        for (uint32_t i = 0; i < _rows; i++)
+        for (uint32_t i = 0; i < _rows*_cols; i++)
         {
-            for (uint32_t j = 0; j < _cols; j++)
-            {
-                cout<<at(j,i)<<' ';
-            }
+            
+                cout<<_vals[i]<<' ';
+            
             cout<<endl;
         }
         
