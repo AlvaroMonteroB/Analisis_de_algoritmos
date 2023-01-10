@@ -10,9 +10,9 @@
 #include"algoritmos.h"
 #include<string.h>
 #include<cmath>
-#include <opencv2/imgcodecs.hpp>
+/*#include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
+#include <opencv2/imgproc.hpp>*/
 using namespace std;
 using namespace cv;
 
@@ -59,13 +59,15 @@ int obtenerMayor(vector<long double>Tiempos);
 Tipo_eqn BigO(const vector<long double>tiempos, Tipo_graph tipo);
 Tipo_eqn LittleO(const vector<long double>tiempos,Tipo_graph tipo);
 Tipo_eqn BigW(const vector<long double>tiempos,Tipo_graph tipo);
+Tipo_eqn Theta(const vector<long double>tiempos,Tipo_graph tipo);
 punto_pendiente obtenerMayorfloat(const vector<long double>Tiempos);
 punto_pendiente Obtenermenordoub(const vector<long double> Tiempos);
 long double logbn(long double b, long double n);
 vector<long double> get_vector(Tipo_eqn func);
 vector<long double> transX(vector<long double>vect);
 void Draw_graph(vector<long double>Tn, vector<long double>Gn);
-
+void Double_draw(vector<long double>Tn,vector<long double>Gn1, vector<long double> Gn2);
+vector<long double> moveVect(vector<long double> vect,int val);
 
 //===================================================================
 //===========================FUNCIONES==============================
@@ -85,7 +87,7 @@ void func_prin(){
         }
     }
     
-    render_graphic(tiempos);
+    //render_graphic(tiempos);
     
     comp1=(Tipo_graph*)malloc(4*sizeof(Tipo_graph));
     
@@ -418,7 +420,7 @@ void notacion(const vector<long double> vect, Tipo_graph tipo){
     do
     {
     cout<<"Selecciona que notación quieres"<<endl<<"1.-Big O"<<endl<<"2.-Little O"<<endl;
-    cout<<"3.-Big Omega"<<endl<<"4.-Little Omega"<<endl<<"5.-Big Theta"<<endl<<"6.-Little Theta"<<endl<<"7.-Salir del programa"<<endl;
+    cout<<"3.-Big Omega"<<endl<<"4.-Little Omega"<<endl<<"5.-Theta"<<endl<<"6.-Salir del programa"<<endl;
     cin>>opt;
     switch (opt)
     {
@@ -431,27 +433,38 @@ void notacion(const vector<long double> vect, Tipo_graph tipo){
         val=get_vector(tip);
         break;
     case 3:
+        tip=BigW(vect,tipo);
+        val=get_vector(tip);
         
         break;
     case 4:
-        
+        tip=BigW(vect,tipo);
+        val=get_vector(tip);
         break;
     case 5:
-        
+        Theta;
         break;
+
     case 6:
-        
-        break;
-    case 7:
         break;
     default:
     cout<<"Introduce una opcion valida"<<endl;
         break;
     }
-     vector<long double>Gn=get_vector(tip);
-     Draw_graph(vect,Gn);
+    if (opt<6&&opt>0&&(opt!=4&&3&&5))
+    {
+        vector<long double>Gn=get_vector(tip);
+        Draw_graph(vect,Gn);
+    }
+    if(opt==3||opt==4){
+        vector<long double>Gn=get_vector(tip);
+        Gn=moveVect(Gn,0);
+        Draw_graph(vect,Gn);
+    }
+    
+     
 
-    } while (opt<7);
+    } while (opt<6);
     
 }
 
@@ -645,6 +658,7 @@ vector<long double>transX(vector<long double>vect){
 
 
 void Draw_graph(const vector<long double>Tn, const vector<long double>Gn){
+    cout<<"Si entra"<<endl;
     Mat image(600,800,CV_64FC4,Scalar(255, 255, 255));
     if(!image.data){
         cout<<"Couldnt create image";
@@ -667,7 +681,133 @@ void Draw_graph(const vector<long double>Tn, const vector<long double>Gn){
             line (image,ini,fin,color,1);
         }
 
+        namedWindow("Grafica",WINDOW_AUTOSIZE);
+        moveWindow("Grafica",300,140);
+        imshow("Grafica",image);
+        waitKey(0); 
+        cout<<"Grafico generado "<<endl;
 
 }
 
+
+
+Tipo_eqn BigW(const vector<long double>tiempos,Tipo_graph tipo){
+    long double  abj;
+    Tipo_eqn result={};
+    punto_pendiente pendiente;
+    vector<long double> m(tiempos.size());
+    for (int i = 0; i < tiempos.size(); i++)
+    {
+        abj=(long double)(i);
+        if(abj==0){
+            m[i]=0;
+        }else{
+            m[i]=tan((long double)(tiempos[i]/abj));
+        }
+        
+        }
+        pendiente=Obtenermenordoub(m);
+
+         if (tipo.band==1)
+        {
+            long double e;
+            e=logbn(pendiente.punto,tiempos[pendiente.punto]);
+            if(e==0){
+                cout<<"La ecuacion de tu funcion es O(1)"<<endl;
+                result.band=0;
+            }else{
+            cout<<"La ecuacion de tu funcion es: O(X^"<<e<<") "<<endl;
+                result.band=1;
+            } result.func=e;
+            
+        }else if(tipo.band==2){
+
+            long double e;
+            e=pendiente.pendiente;
+            cout<<"La ecuacion de tu funcion es: O("<<e<<"X)"<<endl;
+            result.band=2;
+            result.func=e;
+
+        }else if(tipo.band==3){
+            long double e=pow(pendiente.punto,1/tiempos[pendiente.punto]);
+            cout<<"La ecuacion de tu funcion es: O(Log("<<e<<")(X)";
+            result.band=3;
+            result.func=e;
+            
+        }else if(tipo.band==0){
+            cout<<"Su ecuacion es constante"<<endl;
+            result.band=0;
+            long double e=0;
+            result.func=e;
+        }
+        system("pause");
+        return result;
+
+}
+
+
+
+Tipo_eqn Theta(const vector<long double>tiempos,Tipo_graph tipo){
+    //Vamos a usar funciones especiales para poder graficar los 3 comprtamienos a la vez
+    long double  abj;
+    Tipo_eqn result={};
+    punto_pendiente pendienteL,pendienteH;
+    vector<long double> m(tiempos.size());
+    for (int i = 0; i < tiempos.size(); i++)
+    {
+        abj=(long double)(i);
+        if(abj==0){
+            m[i]=0;
+        }else{
+            m[i]=tan((long double)(tiempos[i]/abj));
+        }
+    }
+    pendienteL=Obtenermenordoub(m);
+    pendienteH=obtenerMayorfloat(m);
+
+
+
+vector<long double> moveVect(vector<long double> vect, int val){
+    //Aqui se desplazan los vectores en el eje y para que quepa en la ventana
+    if(val==0){
+        for (int i = 0; i < vect.size(); i++)
+    {
+        vect[i]=vect[i]+vect[vect.size()];
+    }
+    
+    }else{
+        for (int i = 0; i < vect.size(); i++)
+        {
+            vect[i]=vect[i]+val;
+        }
+    }
+    return vect;
+    
+}
+
+punto_pendiente Obtenermenordoub(const vector<long double> Tiempos){
+   punto_pendiente output;
+   long double men=Tiempos[0];
+   output.punto=0;
+
+    
+    for (int i = 1; i < Tiempos.size(); i++)
+    {
+        if (Tiempos[i]<men)
+        {
+            men=Tiempos[i];
+            output.punto=i;
+        }
+        
+    }
+    output.pendiente=men;
+    return output;
+    
+}
+
+
+void Double_draw(vector<long double>Tn,vector<long double>Gn1, vector<long double> Gn2){
+
+    
+}
 //const, parab, line, log
