@@ -32,7 +32,7 @@ struct comp{
 };
 
 
-void encode(Nodo *raiz, string str, unordered_map<char,string>&codigoHuffman){
+void encode(Nodo *&raiz, string str, unordered_map<char,string>&codigoHuffman){
     if (raiz==nullptr)
     {
         return;
@@ -48,11 +48,11 @@ void encode(Nodo *raiz, string str, unordered_map<char,string>&codigoHuffman){
 }
 
 void decode(Nodo *raiz, int &index,string str){
-        if (!raiz)
+        if (raiz==nullptr)
         {
             return;
         }
-        if (!(raiz->izq&& raiz->der))
+        if ((!raiz->izq&& !raiz->der))
         {
             cout<<raiz->_sim;
         }
@@ -88,7 +88,22 @@ void Create_tree(string text){
         Nodo *raiz=pq.top();
         unordered_map<char,string> codigoHuffman;
         encode(raiz,"",codigoHuffman);
-
-        
+        cout<<"Los codigoss de huffman son"<<endl;
+        for(auto pair: codigoHuffman){
+            cout<<pair.first<<" "<<pair.second<<endl;
+        }
+        cout<<"El mensaje original era"<<endl<<text<<endl;  
+        string str="";
+        for(char simbol:text){
+                str+=codigoHuffman[simbol];
+        }
+        cout<<"El texto codificado es"<<endl<<str<<endl;
+        int index=-1;
+        cout<<"El texto decodificado es"<<endl;
+        while (index<(int)str.size()-2)
+        {
+            decode(raiz,index,str);
+        }
+        cout<<endl<<endl<<endl;
         
 }
